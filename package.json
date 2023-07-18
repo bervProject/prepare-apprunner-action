@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "prepare-apprunnerr-action",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Preparing your App Runner before deployment",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -10,12 +10,13 @@
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
+    "package:post": "ncc build lib/post-action.js --source-map --license licenses.txt -o dist/post",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm run package:post && npm test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/bervProject/prepare-apprunner-action.git"
   },
   "keywords": [
     "actions",
@@ -25,7 +26,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.10.0"
+    "@actions/core": "^1.10.0",
+    "@aws-sdk/client-apprunner": "^3.370.0"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",

@@ -1,23 +1,25 @@
 import * as core from '@actions/core';
-import { AppRunnerClient, ResumeServiceCommand } from "@aws-sdk/client-apprunner"; // ES Modules import
+import { AppRunnerClient, PauseServiceCommand, ResumeServiceCommand } from "@aws-sdk/client-apprunner"; // ES Modules import
 
 async function run(): Promise<void> {
   try {
-    const serviceArn: string = core.getInput('arn')
+    const pauseState = core.getState('need_pause');
+    if (pauseState !== "YES")
+    {
+      core.info("Do Nothing.");
+      return;
+    }
+    // re-pause the service
+    const serviceArn: string = core.getInput('arn');
     const client = new AppRunnerClient({});
     const input = { // ResumeServiceRequest
       ServiceArn: serviceArn, // required
     };
-    const command = new ResumeServiceCommand(input);
+    const command = new PauseServiceCommand(input);
     const response = await client.send(command);
-    if (response.Service?.Status === "OPERATION_IN_PROGRESS")
-    {
+    if (response.Service?.Status === "OPERATION_IN_PROGRESS") {
       // need to pause
-      core.saveState("need_pause", "TRUE");
-      core.info("Service has been started.");
-    } else if (response.Service?.Status === "RUNNING") {
-      // do nothing
-      core.info("Service is running.")
+      core.info("Service has been paused.");
     } else {
       // do nothing, but what happen?
       core.info(`The service state is ${response.Service?.Status}`);
