@@ -8,7 +8,7 @@ function sleep(ms: number) {
 async function run(): Promise<void> {
   try {
     const pauseState = core.getState('need_pause');
-    if (pauseState !== 'YES') {
+    if (pauseState !== 'TRUE') {
       core.info(`State: ${pauseState}`);
       core.info('Do Nothing.')
       return
