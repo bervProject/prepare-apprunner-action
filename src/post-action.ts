@@ -18,6 +18,7 @@ async function run(): Promise<void> {
       core.info('Do Nothing.')
       return
     }
+    core.info('Pausing Service...')
     const serviceArn: string = core.getInput('arn')
     const region: string = core.getInput('region')
     const client = new AppRunnerClient({
@@ -32,6 +33,7 @@ async function run(): Promise<void> {
       const response = await client.send(describeCommand)
       if (response.Service?.Status === 'OPERATION_IN_PROGRESS') {
         // need to wait again
+        core.info(`Service Status: ${response.Service?.Status}. Wait for 1s.`)
         await sleep(1000) // wait 1s
       } else {
         isReady = true

@@ -47,7 +47,7 @@ function sleep(ms) {
     });
 }
 function run() {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pauseState = core.getState('need_pause');
@@ -57,6 +57,7 @@ function run() {
                 core.info('Do Nothing.');
                 return;
             }
+            core.info('Pausing Service...');
             const serviceArn = core.getInput('arn');
             const region = core.getInput('region');
             const client = new client_apprunner_1.AppRunnerClient({
@@ -71,6 +72,7 @@ function run() {
                 const response = yield client.send(describeCommand);
                 if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
                     // need to wait again
+                    core.info(`Service Status: ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}. Wait for 1s.`);
                     yield sleep(1000); // wait 1s
                 }
                 else {
@@ -80,13 +82,13 @@ function run() {
             // re-pause the service
             const command = new client_apprunner_1.PauseServiceCommand(input);
             const response = yield client.send(command);
-            if (((_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status) === 'OPERATION_IN_PROGRESS') {
+            if (((_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status) === 'OPERATION_IN_PROGRESS') {
                 // need to pause
                 core.info('Service has been paused.');
             }
             else {
                 // do nothing, but what happen?
-                core.info(`The service state is ${(_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status}`);
+                core.info(`The service state is ${(_d = response.Service) === null || _d === void 0 ? void 0 : _d.Status}`);
             }
         }
         catch (error) {
