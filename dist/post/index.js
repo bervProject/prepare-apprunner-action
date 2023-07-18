@@ -41,30 +41,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(42186));
 const client_apprunner_1 = __nccwpck_require__(3503); // ES Modules import
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 function run() {
-    var _a, _b;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pauseState = core.getState('need_pause');
-            if (pauseState !== "YES") {
-                core.info("Do Nothing.");
+            if (pauseState !== 'YES') {
+                core.info(`State: ${pauseState}`);
+                core.info('Do Nothing.');
                 return;
             }
-            // re-pause the service
             const serviceArn = core.getInput('arn');
-            const client = new client_apprunner_1.AppRunnerClient({});
+            const region = core.getInput('region');
+            const client = new client_apprunner_1.AppRunnerClient({
+                region
+            });
             const input = {
-                ServiceArn: serviceArn, // required
+                ServiceArn: serviceArn // required
             };
+            const describeCommand = new client_apprunner_1.DescribeServiceCommand(input);
+            let isReady = false;
+            do {
+                const response = yield client.send(describeCommand);
+                if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
+                    // need to wait again
+                    yield sleep(1000); // wait 1s
+                }
+                else {
+                    isReady = true;
+                }
+            } while (!isReady);
+            // re-pause the service
             const command = new client_apprunner_1.PauseServiceCommand(input);
             const response = yield client.send(command);
-            if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === "OPERATION_IN_PROGRESS") {
+            if (((_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status) === 'OPERATION_IN_PROGRESS') {
                 // need to pause
-                core.info("Service has been paused.");
+                core.info('Service has been paused.');
             }
             else {
                 // do nothing, but what happen?
-                core.info(`The service state is ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}`);
+                core.info(`The service state is ${(_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status}`);
             }
         }
         catch (error) {

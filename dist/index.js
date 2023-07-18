@@ -46,20 +46,24 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const serviceArn = core.getInput('arn');
-            const client = new client_apprunner_1.AppRunnerClient({});
+            const region = core.getInput('region');
+            const client = new client_apprunner_1.AppRunnerClient({
+                region
+            });
             const input = {
-                ServiceArn: serviceArn, // required
+                // ResumeServiceRequest
+                ServiceArn: serviceArn // required
             };
             const command = new client_apprunner_1.ResumeServiceCommand(input);
             const response = yield client.send(command);
-            if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === "OPERATION_IN_PROGRESS") {
+            if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
                 // need to pause
-                core.saveState("need_pause", "TRUE");
-                core.info("Service has been started.");
+                core.saveState('need_pause', 'TRUE');
+                core.info('Service has been started.');
             }
-            else if (((_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status) === "RUNNING") {
+            else if (((_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status) === 'RUNNING') {
                 // do nothing
-                core.info("Service is running.");
+                core.info('Service is running.');
             }
             else {
                 // do nothing, but what happen?
