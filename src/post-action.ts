@@ -13,7 +13,8 @@ async function run(): Promise<void> {
   try {
     const pauseState = core.getState('need_pause')
     if (pauseState !== 'TRUE') {
-      core.info(`State: ${pauseState}`)
+      core.debug(`State: ${pauseState}`)
+      core.debug(`State type: ${typeof pauseState}`)
       core.info('Do Nothing.')
       return
     }
