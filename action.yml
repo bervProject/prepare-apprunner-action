@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Prepare App Runner'
+description: 'Prepare App Runner for Deployment'
+author: 'Bervianto Leo Pratama'
 inputs:
-  milliseconds: # change this
+  arn: # change this
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'App Service ARN'
+  region:
+    required: true
+    description: 'AWS Region'
 runs:
   using: 'node16'
   main: 'dist/index.js'
