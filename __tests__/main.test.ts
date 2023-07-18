@@ -1,8 +1,12 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
-import {expect, test} from '@jest/globals'
+import { mockClient } from "aws-sdk-client-mock";
+import { AppRunnerClient } from "@aws-sdk/client-apprunner";
+
+const appRunnerClientMock = mockClient(AppRunnerClient);
+
+
+beforeEach(() => {
+  appRunnerClientMock.reset();
+});
 
 test('throws invalid number', async () => {
   const input = parseInt('foo', 10)
