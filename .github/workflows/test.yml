@@ -32,3 +32,4 @@ jobs:
         with:
           arn: ${{ secrets.ARN }}
           region: 'ap-southeast-1'
+          wait: 15

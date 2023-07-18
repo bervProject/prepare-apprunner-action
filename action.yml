@@ -8,6 +8,10 @@ inputs:
   region:
     required: true
     description: 'AWS Region'
+  wait:
+    required: false
+    description: 'Waiting time in seconds'
+    default: '30'
 runs:
   using: 'node16'
   main: 'dist/index.js'

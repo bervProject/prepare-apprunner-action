@@ -59,6 +59,8 @@ function run() {
             }
             core.info('Pausing Service...');
             const serviceArn = core.getInput('arn');
+            const waitingTime = core.getInput('wait');
+            const wait = parseInt(waitingTime);
             const region = core.getInput('region');
             const client = new client_apprunner_1.AppRunnerClient({
                 region
@@ -72,8 +74,8 @@ function run() {
                 const response = yield client.send(describeCommand);
                 if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
                     // need to wait again
-                    core.info(`Service Status: ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}. Wait for 1s.`);
-                    yield sleep(1000); // wait 1s
+                    core.info(`Service Status: ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}. Wait for ${wait}s.`);
+                    yield sleep(wait * 1000); // wait 1s
                 }
                 else {
                     isReady = true;
