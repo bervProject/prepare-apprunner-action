@@ -3,11 +3,11 @@ import {AppRunnerClient, ResumeServiceCommand} from '@aws-sdk/client-apprunner' 
 
 async function run(): Promise<void> {
   try {
-    const serviceArn: string = core.getInput('arn');
-    const region: string = core.getInput('region');
+    const serviceArn: string = core.getInput('arn')
+    const region: string = core.getInput('region')
     const client = new AppRunnerClient({
       region
-    });
+    })
     const input = {
       // ResumeServiceRequest
       ServiceArn: serviceArn // required

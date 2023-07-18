@@ -42,14 +42,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(42186));
 const client_apprunner_1 = __nccwpck_require__(3503); // ES Modules import
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    });
 }
 function run() {
     var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pauseState = core.getState('need_pause');
-            if (pauseState !== 'YES') {
+            if (pauseState !== 'TRUE') {
                 core.info(`State: ${pauseState}`);
                 core.info('Do Nothing.');
                 return;

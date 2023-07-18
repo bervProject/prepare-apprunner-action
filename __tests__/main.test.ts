@@ -1,12 +1,11 @@
-import { mockClient } from "aws-sdk-client-mock";
-import { AppRunnerClient } from "@aws-sdk/client-apprunner";
+import {mockClient} from 'aws-sdk-client-mock'
+import {AppRunnerClient} from '@aws-sdk/client-apprunner'
 
-const appRunnerClientMock = mockClient(AppRunnerClient);
-
+const appRunnerClientMock = mockClient(AppRunnerClient)
 
 beforeEach(() => {
-  appRunnerClientMock.reset();
-});
+  appRunnerClientMock.reset()
+})
 
 test('throws invalid number', async () => {
   const input = parseInt('foo', 10)
