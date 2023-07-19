@@ -65,7 +65,7 @@ function run() {
                 let isReady = false;
                 do {
                     core.info(`Wait for ${wait}s until service status is running.`);
-                    yield (0, sleep_1.sleep)(wait);
+                    yield (0, sleep_1.sleep)(wait * 1000);
                     const describeCommand = new client_apprunner_1.DescribeServiceCommand({
                         ServiceArn: serviceArn,
                     });

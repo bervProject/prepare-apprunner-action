@@ -25,7 +25,7 @@ async function run(): Promise<void> {
         core.info(
           `Wait for ${wait}s until service status is running.`
         )
-        await sleep(wait);
+        await sleep(wait * 1000);
         const describeCommand = new DescribeServiceCommand({
           ServiceArn: serviceArn,
         });
