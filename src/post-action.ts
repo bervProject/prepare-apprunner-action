@@ -4,10 +4,8 @@ import {
   DescribeServiceCommand,
   PauseServiceCommand
 } from '@aws-sdk/client-apprunner' // ES Modules import
+import { sleep } from './sleep'
 
-async function sleep(ms: number): Promise<unknown> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
 
 async function run(): Promise<void> {
   try {

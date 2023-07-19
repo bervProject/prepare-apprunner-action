@@ -41,12 +41,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(42186));
 const client_apprunner_1 = __nccwpck_require__(3503); // ES Modules import
+const sleep_1 = __nccwpck_require__(83481);
 function run() {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const serviceArn = core.getInput('arn');
             const region = core.getInput('region');
+            const waitUntil = core.getInput('wait');
+            const wait = parseInt(waitUntil);
             const client = new client_apprunner_1.AppRunnerClient({
                 region
             });
@@ -59,15 +62,27 @@ function run() {
             if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
                 // need to pause
                 core.saveState('need_pause', 'TRUE');
+                let isReady = false;
+                do {
+                    core.info(`Wait for ${wait}s until service status is running.`);
+                    yield (0, sleep_1.sleep)(wait);
+                    const describeCommand = new client_apprunner_1.DescribeServiceCommand({
+                        ServiceArn: serviceArn,
+                    });
+                    const describeResponse = yield client.send(describeCommand);
+                    if (((_b = describeResponse.Service) === null || _b === void 0 ? void 0 : _b.Status) === 'RUNNING') {
+                        isReady = true;
+                    }
+                } while (!isReady);
                 core.info('Service has been started.');
             }
-            else if (((_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status) === 'RUNNING') {
+            else if (((_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status) === 'RUNNING') {
                 // do nothing
                 core.info('Service is running.');
             }
             else {
                 // do nothing, but what happen?
-                core.info(`The service state is ${(_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status}`);
+                core.info(`The service state is ${(_d = response.Service) === null || _d === void 0 ? void 0 : _d.Status}`);
             }
         }
         catch (error) {
@@ -77,6 +92,32 @@ function run() {
     });
 }
 run();
+
+
+/***/ }),
+
+/***/ 83481:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sleep = void 0;
+function sleep(ms) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    });
+}
+exports.sleep = sleep;
 
 
 /***/ }),
