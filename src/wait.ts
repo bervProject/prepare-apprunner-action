@@ -47,7 +47,7 @@ async function waitAppRunnerUntil({
 }): Promise<void> {
   let isReady = false
   do {
-    core.info(`Wait for ${wait}s until service status is running.`)
+    core.info(`Wait for ${wait}s until service status is ${endStatus}.`)
     await sleep(wait * 1000)
     const describeCommand = new DescribeServiceCommand({
       ServiceArn: serviceArn
