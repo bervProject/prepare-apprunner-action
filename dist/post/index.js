@@ -41,9 +41,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(42186));
 const client_apprunner_1 = __nccwpck_require__(3503); // ES Modules import
-const sleep_1 = __nccwpck_require__(83481);
+const wait_1 = __nccwpck_require__(45817);
 function run() {
-    var _a, _b, _c, _d;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const pauseState = core.getState('need_pause');
@@ -61,32 +61,30 @@ function run() {
             const client = new client_apprunner_1.AppRunnerClient({
                 region
             });
+            yield (0, wait_1.waitAppRunner)({
+                client,
+                wait,
+                serviceArn
+            });
+            // re-pause the service
             const input = {
                 ServiceArn: serviceArn // required
             };
-            const describeCommand = new client_apprunner_1.DescribeServiceCommand(input);
-            let isReady = false;
-            do {
-                const response = yield client.send(describeCommand);
-                if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
-                    // need to wait again
-                    core.info(`Service Status: ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}. Wait for ${wait}s.`);
-                    yield (0, sleep_1.sleep)(wait * 1000); // wait 1s
-                }
-                else {
-                    isReady = true;
-                }
-            } while (!isReady);
-            // re-pause the service
             const command = new client_apprunner_1.PauseServiceCommand(input);
             const response = yield client.send(command);
-            if (((_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status) === 'OPERATION_IN_PROGRESS') {
+            if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
                 // need to pause
+                yield (0, wait_1.waitAppRunnerUntil)({
+                    client,
+                    wait,
+                    serviceArn,
+                    endStatus: 'PAUSED'
+                });
                 core.info('Service has been paused.');
             }
             else {
                 // do nothing, but what happen?
-                core.info(`The service state is ${(_d = response.Service) === null || _d === void 0 ? void 0 : _d.Status}`);
+                core.info(`The service state is ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}`);
             }
         }
         catch (error) {
@@ -122,6 +120,93 @@ function sleep(ms) {
     });
 }
 exports.sleep = sleep;
+
+
+/***/ }),
+
+/***/ 45817:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.waitAppRunnerUntil = exports.waitAppRunner = void 0;
+const core = __importStar(__nccwpck_require__(42186));
+const client_apprunner_1 = __nccwpck_require__(3503);
+const sleep_1 = __nccwpck_require__(83481);
+function waitAppRunner({ client, serviceArn, wait }) {
+    var _a, _b, _c;
+    return __awaiter(this, void 0, void 0, function* () {
+        const input = {
+            ServiceArn: serviceArn // required
+        };
+        const describeCommand = new client_apprunner_1.DescribeServiceCommand(input);
+        let isReady = false;
+        do {
+            const response = yield client.send(describeCommand);
+            if (((_a = response.Service) === null || _a === void 0 ? void 0 : _a.Status) === 'OPERATION_IN_PROGRESS') {
+                // need to wait again
+                core.info(`Service Status: ${(_b = response.Service) === null || _b === void 0 ? void 0 : _b.Status}. Wait for ${wait}s.`);
+                yield (0, sleep_1.sleep)(wait * 1000); // wait 1s
+            }
+            else {
+                core.info(`Service status now: ${(_c = response.Service) === null || _c === void 0 ? void 0 : _c.Status}`);
+                isReady = true;
+            }
+        } while (!isReady);
+    });
+}
+exports.waitAppRunner = waitAppRunner;
+function waitAppRunnerUntil({ client, serviceArn, wait, endStatus }) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        let isReady = false;
+        do {
+            core.info(`Wait for ${wait}s until service status is running.`);
+            yield (0, sleep_1.sleep)(wait * 1000);
+            const describeCommand = new client_apprunner_1.DescribeServiceCommand({
+                ServiceArn: serviceArn
+            });
+            const describeResponse = yield client.send(describeCommand);
+            if (((_a = describeResponse.Service) === null || _a === void 0 ? void 0 : _a.Status) === endStatus) {
+                isReady = true;
+            }
+        } while (!isReady);
+    });
+}
+exports.waitAppRunnerUntil = waitAppRunnerUntil;
 
 
 /***/ }),

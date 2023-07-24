@@ -1,11 +1,6 @@
 import * as core from '@actions/core'
-import {
-  AppRunnerClient,
-  DescribeServiceCommand,
-  PauseServiceCommand
-} from '@aws-sdk/client-apprunner' // ES Modules import
-import { sleep } from './sleep'
-
+import {AppRunnerClient, PauseServiceCommand} from '@aws-sdk/client-apprunner' // ES Modules import
+import {waitAppRunner, waitAppRunnerUntil} from './wait'
 
 async function run(): Promise<void> {
   try {
@@ -24,28 +19,25 @@ async function run(): Promise<void> {
     const client = new AppRunnerClient({
       region
     })
+    await waitAppRunner({
+      client,
+      wait,
+      serviceArn
+    })
+    // re-pause the service
     const input = {
       ServiceArn: serviceArn // required
     }
-    const describeCommand = new DescribeServiceCommand(input)
-    let isReady = false
-    do {
-      const response = await client.send(describeCommand)
-      if (response.Service?.Status === 'OPERATION_IN_PROGRESS') {
-        // need to wait again
-        core.info(
-          `Service Status: ${response.Service?.Status}. Wait for ${wait}s.`
-        )
-        await sleep(wait * 1000) // wait 1s
-      } else {
-        isReady = true
-      }
-    } while (!isReady)
-    // re-pause the service
     const command = new PauseServiceCommand(input)
     const response = await client.send(command)
     if (response.Service?.Status === 'OPERATION_IN_PROGRESS') {
       // need to pause
+      await waitAppRunnerUntil({
+        client,
+        wait,
+        serviceArn,
+        endStatus: 'PAUSED'
+      })
       core.info('Service has been paused.')
     } else {
       // do nothing, but what happen?
