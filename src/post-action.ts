@@ -19,6 +19,7 @@ async function run(): Promise<void> {
     const client = new AppRunnerClient({
       region
     })
+    const startTime = new Date()
     await waitAppRunner({
       client,
       wait,
@@ -39,6 +40,11 @@ async function run(): Promise<void> {
         endStatus: 'PAUSED'
       })
       core.info('Service has been paused.')
+      const endTime = new Date()
+      const seconds = (endTime.getTime() - startTime.getTime()) / 1000;
+      core.summary.addHeading("Prepare AppRunner Result")
+        .addRaw(`Pausing time: ${seconds} seconds`)
+        .write()
     } else {
       // do nothing, but what happen?
       core.info(`The service state is ${response.Service?.Status}`)
