@@ -30,7 +30,7 @@
     "@aws-sdk/client-apprunner": "^3.714.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.3",
+    "@types/node": "^22.10.5",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "@vercel/ncc": "^0.38.3",
