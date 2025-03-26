@@ -34,8 +34,9 @@ async function run(): Promise<void> {
       })
       core.info('Service has been started.')
       const endTime = new Date()
-      const seconds = (endTime.getTime() - startTime.getTime()) / 1000;
-      core.summary.addHeading("Prepare AppRunner Result")
+      const seconds = (endTime.getTime() - startTime.getTime()) / 1000
+      core.summary
+        .addHeading('Prepare AppRunner Result')
         .addRaw(`Starting time: ${seconds} seconds`)
         .write()
     } else if (response.Service?.Status === 'RUNNING') {

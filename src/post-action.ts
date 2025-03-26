@@ -41,8 +41,9 @@ async function run(): Promise<void> {
       })
       core.info('Service has been paused.')
       const endTime = new Date()
-      const seconds = (endTime.getTime() - startTime.getTime()) / 1000;
-      core.summary.addHeading("Prepare AppRunner Result")
+      const seconds = (endTime.getTime() - startTime.getTime()) / 1000
+      core.summary
+        .addHeading('Prepare AppRunner Result')
         .addRaw(`Pausing time: ${seconds} seconds`)
         .write()
     } else {
