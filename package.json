@@ -28,13 +28,13 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@aws-sdk/client-apprunner": "^3.775.0"
+    "@aws-sdk/client-apprunner": "^3.799.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.25.0",
     "@types/node": "^22.15.3",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vercel/ncc": "^0.38.3",
     "aws-sdk-client-mock": "^4.1.0",
