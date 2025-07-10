@@ -1,21 +1,28 @@
-import * as core from '@actions/core'
+import {
+  getState,
+  debug,
+  info,
+  getInput,
+  summary,
+  setFailed
+} from '@actions/core'
 import {AppRunnerClient, PauseServiceCommand} from '@aws-sdk/client-apprunner' // ES Modules import
 import {waitAppRunner, waitAppRunnerUntil} from './wait'
 
 async function run(): Promise<void> {
   try {
-    const pauseState = core.getState('need_pause')
+    const pauseState = getState('need_pause')
     if (pauseState !== 'TRUE') {
-      core.debug(`State: ${pauseState}`)
-      core.debug(`State type: ${typeof pauseState}`)
-      core.info('Do Nothing.')
+      debug(`State: ${pauseState}`)
+      debug(`State type: ${typeof pauseState}`)
+      info('Do Nothing.')
       return
     }
-    core.info('Pausing Service...')
-    const serviceArn: string = core.getInput('arn')
-    const waitingTime: string = core.getInput('wait')
+    info('Pausing Service...')
+    const serviceArn: string = getInput('arn')
+    const waitingTime: string = getInput('wait')
     const wait = parseInt(waitingTime)
-    const region: string = core.getInput('region')
+    const region: string = getInput('region')
     const client = new AppRunnerClient({
       region
     })
@@ -39,19 +46,19 @@ async function run(): Promise<void> {
         serviceArn,
         endStatus: 'PAUSED'
       })
-      core.info('Service has been paused.')
+      info('Service has been paused.')
       const endTime = new Date()
       const seconds = (endTime.getTime() - startTime.getTime()) / 1000
-      core.summary
+      summary
         .addHeading('Prepare AppRunner Result')
         .addRaw(`Pausing time: ${seconds} seconds`)
         .write()
     } else {
       // do nothing, but what happen?
-      core.info(`The service state is ${response.Service?.Status}`)
+      info(`The service state is ${response.Service?.Status}`)
     }
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) setFailed(error.message)
   }
 }
 

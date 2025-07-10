@@ -6,6 +6,7 @@ import github from 'eslint-plugin-github';
 
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 
 export default defineConfig([
@@ -37,10 +38,7 @@ export default defineConfig([
         },
 
         rules: {
-            "i18n-text/no-en": "off",
-            "eslint-comments/no-use": "off",
-            "import/no-namespace": "off",
-            "no-unused-vars": "off",
+            "i18n-text/no-en": "warn",
             "@typescript-eslint/no-unused-vars": "error",
 
             "@typescript-eslint/explicit-member-accessibility": ["error", {
@@ -51,7 +49,6 @@ export default defineConfig([
             "@typescript-eslint/array-type": "error",
             "@typescript-eslint/await-thenable": "error",
             "@typescript-eslint/ban-ts-comment": "error",
-            camelcase: "off",
             "@typescript-eslint/consistent-type-assertions": "error",
 
             "@typescript-eslint/explicit-function-return-type": ["error", {
@@ -78,8 +75,8 @@ export default defineConfig([
             "@typescript-eslint/promise-function-async": "error",
             "@typescript-eslint/require-array-sort-compare": "error",
             "@typescript-eslint/restrict-plus-operands": "error",
-            semi: "off",
             "@typescript-eslint/unbound-method": "error",
         },
     },
+    eslintPluginPrettierRecommended
 ]);

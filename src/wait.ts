@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import {info} from '@actions/core'
 import {
   AppRunnerClient,
   DescribeServiceCommand
@@ -23,12 +23,10 @@ async function waitAppRunner({
     const response = await client.send(describeCommand)
     if (response.Service?.Status === 'OPERATION_IN_PROGRESS') {
       // need to wait again
-      core.info(
-        `Service Status: ${response.Service?.Status}. Wait for ${wait}s.`
-      )
+      info(`Service Status: ${response.Service?.Status}. Wait for ${wait}s.`)
       await sleep(wait * 1000) // wait 1s
     } else {
-      core.info(`Service status now: ${response.Service?.Status}`)
+      info(`Service status now: ${response.Service?.Status}`)
       isReady = true
     }
   } while (!isReady)
@@ -47,7 +45,7 @@ async function waitAppRunnerUntil({
 }): Promise<void> {
   let isReady = false
   do {
-    core.info(`Wait for ${wait}s until service status is ${endStatus}.`)
+    info(`Wait for ${wait}s until service status is ${endStatus}.`)
     await sleep(wait * 1000)
     const describeCommand = new DescribeServiceCommand({
       ServiceArn: serviceArn
