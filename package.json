@@ -33,7 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.34.0",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.1",
     "@vercel/ncc": "^0.38.3",
     "aws-sdk-client-mock": "^4.1.0",
     "eslint": "^9.34.0",
