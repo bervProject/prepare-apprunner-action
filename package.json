@@ -34,7 +34,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.35.0",
     "@types/node": "^24.5.2",
-    "@vercel/ncc": "^0.38.3",
+    "@vercel/ncc": "^0.38.4",
     "aws-sdk-client-mock": "^4.1.0",
     "eslint": "^9.35.0",
     "eslint-plugin-github": "^6.0.0",
