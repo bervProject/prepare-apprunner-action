@@ -27,7 +27,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^2.0.1",
+    "@actions/core": "^2.0.2",
     "@aws-sdk/client-apprunner": "^3.955.0"
   },
   "devDependencies": {
