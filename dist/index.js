@@ -2392,7 +2392,7 @@ class HttpClient {
         this._maxRetries = 1;
         this._keepAlive = false;
         this._disposed = false;
-        this.userAgent = userAgent;
+        this.userAgent = this._getUserAgentWithOrchestrationId(userAgent);
         this.handlers = handlers || [];
         this.requestOptions = requestOptions;
         if (requestOptions) {
@@ -2871,6 +2871,17 @@ class HttpClient {
             });
         }
         return proxyAgent;
+    }
+    _getUserAgentWithOrchestrationId(userAgent) {
+        const baseUserAgent = userAgent || 'actions/http-client';
+        const orchId = process.env['ACTIONS_ORCHESTRATION_ID'];
+        if (orchId) {
+            // Sanitize the orchestration ID to ensure it contains only valid characters
+            // Valid characters: 0-9, a-z, _, -, .
+            const sanitizedId = orchId.replace(/[^a-z0-9_.-]/gi, '_');
+            return `${baseUserAgent} actions_orchestration_id/${sanitizedId}`;
+        }
+        return baseUserAgent;
     }
     _performExponentialBackoff(retryNumber) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -3614,10 +3625,9 @@ const util_middleware_1 = __nccwpck_require__(6324);
 const defaultAppRunnerHttpAuthSchemeParametersProvider = async (config, context, input) => {
     return {
         operation: (0, util_middleware_1.getSmithyContext)(context).operation,
-        region: (await (0, util_middleware_1.normalizeProvider)(config.region)()) ||
-            (() => {
-                throw new Error("expected `region` to be configured for `aws.auth#sigv4`");
-            })(),
+        region: await (0, util_middleware_1.normalizeProvider)(config.region)() || (() => {
+            throw new Error("expected `region` to be configured for `aws.auth#sigv4`");
+        })(),
     };
 };
 exports.defaultAppRunnerHttpAuthSchemeParametersProvider = defaultAppRunnerHttpAuthSchemeParametersProvider;
@@ -4156,866 +4166,733 @@ var RuntimeEnvironmentSecretsValue = [0, n0, _RESV, 8, 0];
 var RuntimeEnvironmentVariablesKey = [0, n0, _REVK, 8, 0];
 var RuntimeEnvironmentVariablesValue = [0, n0, _REVV, 8, 0];
 var StartCommand = [0, n0, _SC, 8, 0];
-var AssociateCustomDomainRequest$ = [3, n0, _ACDR, 0, [_SA, _DN, _EWWWS], [0, 0, 2]];
-var AssociateCustomDomainResponse$ = [
-    3,
-    n0,
-    _ACDRs,
+var AssociateCustomDomainRequest$ = [3, n0, _ACDR,
+    0,
+    [_SA, _DN, _EWWWS],
+    [0, 0, 2], 2
+];
+var AssociateCustomDomainResponse$ = [3, n0, _ACDRs,
     0,
     [_DNST, _SA, _CD, _VDNST],
-    [0, 0, () => CustomDomain$, () => VpcDNSTargetList],
+    [0, 0, () => CustomDomain$, () => VpcDNSTargetList], 4
 ];
-var AuthenticationConfiguration$ = [3, n0, _AC, 0, [_CA, _ARA], [0, 0]];
-var AutoScalingConfiguration$ = [
-    3,
-    n0,
-    _ASC,
+var AuthenticationConfiguration$ = [3, n0, _AC,
+    0,
+    [_CA, _ARA],
+    [0, 0]
+];
+var AutoScalingConfiguration$ = [3, n0, _ASC,
     0,
     [_ASCA, _ASCN, _ASCR, _L, _S, _MC, _MS, _MSa, _CAr, _DA, _HAS, _ID],
-    [0, 0, 1, 2, 0, 1, 1, 1, 4, 4, 2, 2],
+    [0, 0, 1, 2, 0, 1, 1, 1, 4, 4, 2, 2]
 ];
-var AutoScalingConfigurationSummary$ = [
-    3,
-    n0,
-    _ASCS,
+var AutoScalingConfigurationSummary$ = [3, n0, _ASCS,
     0,
     [_ASCA, _ASCN, _ASCR, _S, _CAr, _HAS, _ID],
-    [0, 0, 1, 0, 4, 2, 2],
+    [0, 0, 1, 0, 4, 2, 2]
 ];
-var CertificateValidationRecord$ = [3, n0, _CVR, 0, [_N, _T, _V, _S], [0, 0, 0, 0]];
-var CodeConfiguration$ = [
-    3,
-    n0,
-    _CC,
+var CertificateValidationRecord$ = [3, n0, _CVR,
+    0,
+    [_N, _T, _V, _S],
+    [0, 0, 0, 0]
+];
+var CodeConfiguration$ = [3, n0, _CC,
     0,
     [_CS, _CCV],
-    [0, [() => CodeConfigurationValues$, 0]],
+    [0, [() => CodeConfigurationValues$, 0]], 1
 ];
-var CodeConfigurationValues$ = [
-    3,
-    n0,
-    _CCV,
+var CodeConfigurationValues$ = [3, n0, _CCV,
     0,
     [_R, _BC, _SC, _P, _REV, _RES],
-    [
-        0,
-        [() => BuildCommand, 0],
-        [() => StartCommand, 0],
-        0,
-        [() => RuntimeEnvironmentVariables, 0],
-        [() => RuntimeEnvironmentSecrets, 0],
-    ],
+    [0, [() => BuildCommand, 0], [() => StartCommand, 0], 0, [() => RuntimeEnvironmentVariables, 0], [() => RuntimeEnvironmentSecrets, 0]], 1
 ];
-var CodeRepository$ = [
-    3,
-    n0,
-    _CR,
+var CodeRepository$ = [3, n0, _CR,
     0,
     [_RU, _SCV, _CC, _SD],
-    [0, () => SourceCodeVersion$, [() => CodeConfiguration$, 0], 0],
+    [0, () => SourceCodeVersion$, [() => CodeConfiguration$, 0], 0], 2
 ];
-var Connection$ = [3, n0, _C, 0, [_CN, _CA, _PT, _S, _CAr], [0, 0, 0, 0, 4]];
-var ConnectionSummary$ = [3, n0, _CSo, 0, [_CN, _CA, _PT, _S, _CAr], [0, 0, 0, 0, 4]];
-var CreateAutoScalingConfigurationRequest$ = [
-    3,
-    n0,
-    _CASCR,
+var Connection$ = [3, n0, _C,
+    0,
+    [_CN, _CA, _PT, _S, _CAr],
+    [0, 0, 0, 0, 4]
+];
+var ConnectionSummary$ = [3, n0, _CSo,
+    0,
+    [_CN, _CA, _PT, _S, _CAr],
+    [0, 0, 0, 0, 4]
+];
+var CreateAutoScalingConfigurationRequest$ = [3, n0, _CASCR,
     0,
     [_ASCN, _MC, _MS, _MSa, _Ta],
-    [0, 1, 1, 1, () => TagList],
+    [0, 1, 1, 1, () => TagList], 1
 ];
-var CreateAutoScalingConfigurationResponse$ = [
-    3,
-    n0,
-    _CASCRr,
+var CreateAutoScalingConfigurationResponse$ = [3, n0, _CASCRr,
     0,
     [_ASC],
-    [() => AutoScalingConfiguration$],
+    [() => AutoScalingConfiguration$], 1
 ];
-var CreateConnectionRequest$ = [3, n0, _CCR, 0, [_CN, _PT, _Ta], [0, 0, () => TagList]];
-var CreateConnectionResponse$ = [3, n0, _CCRr, 0, [_C], [() => Connection$]];
-var CreateObservabilityConfigurationRequest$ = [
-    3,
-    n0,
-    _COCR,
+var CreateConnectionRequest$ = [3, n0, _CCR,
+    0,
+    [_CN, _PT, _Ta],
+    [0, 0, () => TagList], 2
+];
+var CreateConnectionResponse$ = [3, n0, _CCRr,
+    0,
+    [_C],
+    [() => Connection$], 1
+];
+var CreateObservabilityConfigurationRequest$ = [3, n0, _COCR,
     0,
     [_OCN, _TC, _Ta],
-    [0, () => TraceConfiguration$, () => TagList],
+    [0, () => TraceConfiguration$, () => TagList], 1
 ];
-var CreateObservabilityConfigurationResponse$ = [
-    3,
-    n0,
-    _COCRr,
+var CreateObservabilityConfigurationResponse$ = [3, n0, _COCRr,
     0,
     [_OC],
-    [() => ObservabilityConfiguration$],
+    [() => ObservabilityConfiguration$], 1
 ];
-var CreateServiceRequest$ = [
-    3,
-    n0,
-    _CSR,
+var CreateServiceRequest$ = [3, n0, _CSR,
     0,
     [_SN, _SCo, _IC, _Ta, _EC, _HCC, _ASCA, _NC, _OC],
-    [
-        0,
-        [() => SourceConfiguration$, 0],
-        () => InstanceConfiguration$,
-        () => TagList,
-        () => EncryptionConfiguration$,
-        () => HealthCheckConfiguration$,
-        0,
-        () => NetworkConfiguration$,
-        () => ServiceObservabilityConfiguration$,
-    ],
+    [0, [() => SourceConfiguration$, 0], () => InstanceConfiguration$, () => TagList, () => EncryptionConfiguration$, () => HealthCheckConfiguration$, 0, () => NetworkConfiguration$, () => ServiceObservabilityConfiguration$], 2
 ];
-var CreateServiceResponse$ = [3, n0, _CSRr, 0, [_Se, _OI], [[() => Service$, 0], 0]];
-var CreateVpcConnectorRequest$ = [
-    3,
-    n0,
-    _CVCR,
+var CreateServiceResponse$ = [3, n0, _CSRr,
+    0,
+    [_Se, _OI],
+    [[() => Service$, 0], 0], 2
+];
+var CreateVpcConnectorRequest$ = [3, n0, _CVCR,
     0,
     [_VCN, _Su, _SG, _Ta],
-    [0, 64 | 0, 64 | 0, () => TagList],
+    [0, 64 | 0, 64 | 0, () => TagList], 2
 ];
-var CreateVpcConnectorResponse$ = [3, n0, _CVCRr, 0, [_VC], [() => VpcConnector$]];
-var CreateVpcIngressConnectionRequest$ = [
-    3,
-    n0,
-    _CVICR,
+var CreateVpcConnectorResponse$ = [3, n0, _CVCRr,
+    0,
+    [_VC],
+    [() => VpcConnector$], 1
+];
+var CreateVpcIngressConnectionRequest$ = [3, n0, _CVICR,
     0,
     [_SA, _VICN, _IVC, _Ta],
-    [0, 0, () => IngressVpcConfiguration$, () => TagList],
+    [0, 0, () => IngressVpcConfiguration$, () => TagList], 3
 ];
-var CreateVpcIngressConnectionResponse$ = [
-    3,
-    n0,
-    _CVICRr,
+var CreateVpcIngressConnectionResponse$ = [3, n0, _CVICRr,
     0,
     [_VIC],
-    [() => VpcIngressConnection$],
+    [() => VpcIngressConnection$], 1
 ];
-var CustomDomain$ = [
-    3,
-    n0,
-    _CD,
+var CustomDomain$ = [3, n0, _CD,
     0,
-    [_DN, _EWWWS, _CVRe, _S],
-    [0, 2, () => CertificateValidationRecordList, 0],
+    [_DN, _EWWWS, _S, _CVRe],
+    [0, 2, 0, () => CertificateValidationRecordList], 3
 ];
-var DeleteAutoScalingConfigurationRequest$ = [3, n0, _DASCR, 0, [_ASCA, _DAR], [0, 2]];
-var DeleteAutoScalingConfigurationResponse$ = [
-    3,
-    n0,
-    _DASCRe,
+var DeleteAutoScalingConfigurationRequest$ = [3, n0, _DASCR,
+    0,
+    [_ASCA, _DAR],
+    [0, 2], 1
+];
+var DeleteAutoScalingConfigurationResponse$ = [3, n0, _DASCRe,
     0,
     [_ASC],
-    [() => AutoScalingConfiguration$],
+    [() => AutoScalingConfiguration$], 1
 ];
-var DeleteConnectionRequest$ = [3, n0, _DCR, 0, [_CA], [0]];
-var DeleteConnectionResponse$ = [3, n0, _DCRe, 0, [_C], [() => Connection$]];
-var DeleteObservabilityConfigurationRequest$ = [3, n0, _DOCR, 0, [_OCA], [0]];
-var DeleteObservabilityConfigurationResponse$ = [
-    3,
-    n0,
-    _DOCRe,
+var DeleteConnectionRequest$ = [3, n0, _DCR,
+    0,
+    [_CA],
+    [0], 1
+];
+var DeleteConnectionResponse$ = [3, n0, _DCRe,
+    0,
+    [_C],
+    [() => Connection$]
+];
+var DeleteObservabilityConfigurationRequest$ = [3, n0, _DOCR,
+    0,
+    [_OCA],
+    [0], 1
+];
+var DeleteObservabilityConfigurationResponse$ = [3, n0, _DOCRe,
     0,
     [_OC],
-    [() => ObservabilityConfiguration$],
+    [() => ObservabilityConfiguration$], 1
 ];
-var DeleteServiceRequest$ = [3, n0, _DSR, 0, [_SA], [0]];
-var DeleteServiceResponse$ = [3, n0, _DSRe, 0, [_Se, _OI], [[() => Service$, 0], 0]];
-var DeleteVpcConnectorRequest$ = [3, n0, _DVCR, 0, [_VCA], [0]];
-var DeleteVpcConnectorResponse$ = [3, n0, _DVCRe, 0, [_VC], [() => VpcConnector$]];
-var DeleteVpcIngressConnectionRequest$ = [3, n0, _DVICR, 0, [_VICA], [0]];
-var DeleteVpcIngressConnectionResponse$ = [
-    3,
-    n0,
-    _DVICRe,
+var DeleteServiceRequest$ = [3, n0, _DSR,
+    0,
+    [_SA],
+    [0], 1
+];
+var DeleteServiceResponse$ = [3, n0, _DSRe,
+    0,
+    [_Se, _OI],
+    [[() => Service$, 0], 0], 2
+];
+var DeleteVpcConnectorRequest$ = [3, n0, _DVCR,
+    0,
+    [_VCA],
+    [0], 1
+];
+var DeleteVpcConnectorResponse$ = [3, n0, _DVCRe,
+    0,
+    [_VC],
+    [() => VpcConnector$], 1
+];
+var DeleteVpcIngressConnectionRequest$ = [3, n0, _DVICR,
+    0,
+    [_VICA],
+    [0], 1
+];
+var DeleteVpcIngressConnectionResponse$ = [3, n0, _DVICRe,
     0,
     [_VIC],
-    [() => VpcIngressConnection$],
+    [() => VpcIngressConnection$], 1
 ];
-var DescribeAutoScalingConfigurationRequest$ = [3, n0, _DASCRes, 0, [_ASCA], [0]];
-var DescribeAutoScalingConfigurationResponse$ = [
-    3,
-    n0,
-    _DASCResc,
+var DescribeAutoScalingConfigurationRequest$ = [3, n0, _DASCRes,
+    0,
+    [_ASCA],
+    [0], 1
+];
+var DescribeAutoScalingConfigurationResponse$ = [3, n0, _DASCResc,
     0,
     [_ASC],
-    [() => AutoScalingConfiguration$],
+    [() => AutoScalingConfiguration$], 1
 ];
-var DescribeCustomDomainsRequest$ = [3, n0, _DCDR, 0, [_SA, _NT, _MR], [0, 0, 1]];
-var DescribeCustomDomainsResponse$ = [
-    3,
-    n0,
-    _DCDRe,
+var DescribeCustomDomainsRequest$ = [3, n0, _DCDR,
+    0,
+    [_SA, _NT, _MR],
+    [0, 0, 1], 1
+];
+var DescribeCustomDomainsResponse$ = [3, n0, _DCDRe,
     0,
     [_DNST, _SA, _CDu, _VDNST, _NT],
-    [0, 0, () => CustomDomainList, () => VpcDNSTargetList, 0],
+    [0, 0, () => CustomDomainList, () => VpcDNSTargetList, 0], 4
 ];
-var DescribeObservabilityConfigurationRequest$ = [3, n0, _DOCRes, 0, [_OCA], [0]];
-var DescribeObservabilityConfigurationResponse$ = [
-    3,
-    n0,
-    _DOCResc,
+var DescribeObservabilityConfigurationRequest$ = [3, n0, _DOCRes,
+    0,
+    [_OCA],
+    [0], 1
+];
+var DescribeObservabilityConfigurationResponse$ = [3, n0, _DOCResc,
     0,
     [_OC],
-    [() => ObservabilityConfiguration$],
+    [() => ObservabilityConfiguration$], 1
 ];
-var DescribeServiceRequest$ = [3, n0, _DSRes, 0, [_SA], [0]];
-var DescribeServiceResponse$ = [3, n0, _DSResc, 0, [_Se], [[() => Service$, 0]]];
-var DescribeVpcConnectorRequest$ = [3, n0, _DVCRes, 0, [_VCA], [0]];
-var DescribeVpcConnectorResponse$ = [3, n0, _DVCResc, 0, [_VC], [() => VpcConnector$]];
-var DescribeVpcIngressConnectionRequest$ = [3, n0, _DVICRes, 0, [_VICA], [0]];
-var DescribeVpcIngressConnectionResponse$ = [
-    3,
-    n0,
-    _DVICResc,
+var DescribeServiceRequest$ = [3, n0, _DSRes,
+    0,
+    [_SA],
+    [0], 1
+];
+var DescribeServiceResponse$ = [3, n0, _DSResc,
+    0,
+    [_Se],
+    [[() => Service$, 0]], 1
+];
+var DescribeVpcConnectorRequest$ = [3, n0, _DVCRes,
+    0,
+    [_VCA],
+    [0], 1
+];
+var DescribeVpcConnectorResponse$ = [3, n0, _DVCResc,
+    0,
+    [_VC],
+    [() => VpcConnector$], 1
+];
+var DescribeVpcIngressConnectionRequest$ = [3, n0, _DVICRes,
+    0,
+    [_VICA],
+    [0], 1
+];
+var DescribeVpcIngressConnectionResponse$ = [3, n0, _DVICResc,
     0,
     [_VIC],
-    [() => VpcIngressConnection$],
+    [() => VpcIngressConnection$], 1
 ];
-var DisassociateCustomDomainRequest$ = [3, n0, _DCDRi, 0, [_SA, _DN], [0, 0]];
-var DisassociateCustomDomainResponse$ = [
-    3,
-    n0,
-    _DCDRis,
+var DisassociateCustomDomainRequest$ = [3, n0, _DCDRi,
+    0,
+    [_SA, _DN],
+    [0, 0], 2
+];
+var DisassociateCustomDomainResponse$ = [3, n0, _DCDRis,
     0,
     [_DNST, _SA, _CD, _VDNST],
-    [0, 0, () => CustomDomain$, () => VpcDNSTargetList],
+    [0, 0, () => CustomDomain$, () => VpcDNSTargetList], 4
 ];
-var EgressConfiguration$ = [3, n0, _ECg, 0, [_ET, _VCA], [0, 0]];
-var EncryptionConfiguration$ = [3, n0, _EC, 0, [_KK], [0]];
-var HealthCheckConfiguration$ = [
-    3,
-    n0,
-    _HCC,
+var EgressConfiguration$ = [3, n0, _ECg,
+    0,
+    [_ET, _VCA],
+    [0, 0]
+];
+var EncryptionConfiguration$ = [3, n0, _EC,
+    0,
+    [_KK],
+    [0], 1
+];
+var HealthCheckConfiguration$ = [3, n0, _HCC,
     0,
     [_Pr, _Pa, _I, _Ti, _HT, _UT],
-    [0, 0, 1, 1, 1, 1],
+    [0, 0, 1, 1, 1, 1]
 ];
-var ImageConfiguration$ = [
-    3,
-    n0,
-    _ICm,
+var ImageConfiguration$ = [3, n0, _ICm,
     0,
     [_REV, _SC, _P, _RES],
-    [[() => RuntimeEnvironmentVariables, 0], [() => StartCommand, 0], 0, [() => RuntimeEnvironmentSecrets, 0]],
+    [[() => RuntimeEnvironmentVariables, 0], [() => StartCommand, 0], 0, [() => RuntimeEnvironmentSecrets, 0]]
 ];
-var ImageRepository$ = [
-    3,
-    n0,
-    _IR,
+var ImageRepository$ = [3, n0, _IR,
     0,
-    [_II, _ICm, _IRT],
-    [0, [() => ImageConfiguration$, 0], 0],
+    [_II, _IRT, _ICm],
+    [0, 0, [() => ImageConfiguration$, 0]], 2
 ];
-var IngressConfiguration$ = [3, n0, _ICn, 0, [_IPA], [2]];
-var IngressVpcConfiguration$ = [3, n0, _IVC, 0, [_VI, _VEI], [0, 0]];
-var InstanceConfiguration$ = [3, n0, _IC, 0, [_Cp, _M, _IRA], [0, 0, 0]];
-var InternalServiceErrorException$ = [
-    -3,
-    n0,
-    _ISEE,
-    { [_e]: _s, [_hE]: 500, [_aQE]: [`InternalServiceError`, 500] },
+var IngressConfiguration$ = [3, n0, _ICn,
+    0,
+    [_IPA],
+    [2]
+];
+var IngressVpcConfiguration$ = [3, n0, _IVC,
+    0,
+    [_VI, _VEI],
+    [0, 0]
+];
+var InstanceConfiguration$ = [3, n0, _IC,
+    0,
+    [_Cp, _M, _IRA],
+    [0, 0, 0]
+];
+var InternalServiceErrorException$ = [-3, n0, _ISEE,
+    { [_aQE]: [`InternalServiceError`, 500], [_e]: _s, [_hE]: 500 },
     [_Me],
-    [0],
+    [0]
 ];
 schema.TypeRegistry.for(n0).registerError(InternalServiceErrorException$, InternalServiceErrorException);
-var InvalidRequestException$ = [
-    -3,
-    n0,
-    _IRE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`InvalidRequest`, 400] },
+var InvalidRequestException$ = [-3, n0, _IRE,
+    { [_aQE]: [`InvalidRequest`, 400], [_e]: _c, [_hE]: 400 },
     [_Me],
-    [0],
+    [0]
 ];
 schema.TypeRegistry.for(n0).registerError(InvalidRequestException$, InvalidRequestException);
-var InvalidStateException$ = [
-    -3,
-    n0,
-    _ISE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`InvalidState`, 400] },
+var InvalidStateException$ = [-3, n0, _ISE,
+    { [_aQE]: [`InvalidState`, 400], [_e]: _c, [_hE]: 400 },
     [_Me],
-    [0],
+    [0]
 ];
 schema.TypeRegistry.for(n0).registerError(InvalidStateException$, InvalidStateException);
-var ListAutoScalingConfigurationsRequest$ = [
-    3,
-    n0,
-    _LASCR,
+var ListAutoScalingConfigurationsRequest$ = [3, n0, _LASCR,
     0,
     [_ASCN, _LO, _MR, _NT],
-    [0, 2, 1, 0],
+    [0, 2, 1, 0]
 ];
-var ListAutoScalingConfigurationsResponse$ = [
-    3,
-    n0,
-    _LASCRi,
+var ListAutoScalingConfigurationsResponse$ = [3, n0, _LASCRi,
     0,
     [_ASCSL, _NT],
-    [() => AutoScalingConfigurationSummaryList, 0],
+    [() => AutoScalingConfigurationSummaryList, 0], 1
 ];
-var ListConnectionsRequest$ = [3, n0, _LCR, 0, [_CN, _MR, _NT], [0, 1, 0]];
-var ListConnectionsResponse$ = [
-    3,
-    n0,
-    _LCRi,
+var ListConnectionsRequest$ = [3, n0, _LCR,
+    0,
+    [_CN, _MR, _NT],
+    [0, 1, 0]
+];
+var ListConnectionsResponse$ = [3, n0, _LCRi,
     0,
     [_CSL, _NT],
-    [() => ConnectionSummaryList, 0],
+    [() => ConnectionSummaryList, 0], 1
 ];
-var ListObservabilityConfigurationsRequest$ = [
-    3,
-    n0,
-    _LOCR,
+var ListObservabilityConfigurationsRequest$ = [3, n0, _LOCR,
     0,
     [_OCN, _LO, _MR, _NT],
-    [0, 2, 1, 0],
+    [0, 2, 1, 0]
 ];
-var ListObservabilityConfigurationsResponse$ = [
-    3,
-    n0,
-    _LOCRi,
+var ListObservabilityConfigurationsResponse$ = [3, n0, _LOCRi,
     0,
     [_OCSL, _NT],
-    [() => ObservabilityConfigurationSummaryList, 0],
+    [() => ObservabilityConfigurationSummaryList, 0], 1
 ];
-var ListOperationsRequest$ = [3, n0, _LOR, 0, [_SA, _NT, _MR], [0, 0, 1]];
-var ListOperationsResponse$ = [
-    3,
-    n0,
-    _LORi,
+var ListOperationsRequest$ = [3, n0, _LOR,
+    0,
+    [_SA, _NT, _MR],
+    [0, 0, 1], 1
+];
+var ListOperationsResponse$ = [3, n0, _LORi,
     0,
     [_OSL, _NT],
-    [() => OperationSummaryList, 0],
+    [() => OperationSummaryList, 0]
 ];
-var ListServicesForAutoScalingConfigurationRequest$ = [
-    3,
-    n0,
-    _LSFASCR,
+var ListServicesForAutoScalingConfigurationRequest$ = [3, n0, _LSFASCR,
     0,
     [_ASCA, _MR, _NT],
-    [0, 1, 0],
+    [0, 1, 0], 1
 ];
-var ListServicesForAutoScalingConfigurationResponse$ = [
-    3,
-    n0,
-    _LSFASCRi,
+var ListServicesForAutoScalingConfigurationResponse$ = [3, n0, _LSFASCRi,
     0,
     [_SAL, _NT],
-    [64 | 0, 0],
+    [64 | 0, 0], 1
 ];
-var ListServicesRequest$ = [3, n0, _LSR, 0, [_NT, _MR], [0, 1]];
-var ListServicesResponse$ = [3, n0, _LSRi, 0, [_SSL, _NT], [() => ServiceSummaryList, 0]];
-var ListTagsForResourceRequest$ = [3, n0, _LTFRR, 0, [_RA], [0]];
-var ListTagsForResourceResponse$ = [3, n0, _LTFRRi, 0, [_Ta], [() => TagList]];
-var ListVpcConnectorsRequest$ = [3, n0, _LVCR, 0, [_MR, _NT], [1, 0]];
-var ListVpcConnectorsResponse$ = [
-    3,
-    n0,
-    _LVCRi,
+var ListServicesRequest$ = [3, n0, _LSR,
+    0,
+    [_NT, _MR],
+    [0, 1]
+];
+var ListServicesResponse$ = [3, n0, _LSRi,
+    0,
+    [_SSL, _NT],
+    [() => ServiceSummaryList, 0], 1
+];
+var ListTagsForResourceRequest$ = [3, n0, _LTFRR,
+    0,
+    [_RA],
+    [0], 1
+];
+var ListTagsForResourceResponse$ = [3, n0, _LTFRRi,
+    0,
+    [_Ta],
+    [() => TagList]
+];
+var ListVpcConnectorsRequest$ = [3, n0, _LVCR,
+    0,
+    [_MR, _NT],
+    [1, 0]
+];
+var ListVpcConnectorsResponse$ = [3, n0, _LVCRi,
     0,
     [_VCp, _NT],
-    [() => VpcConnectors, 0],
+    [() => VpcConnectors, 0], 1
 ];
-var ListVpcIngressConnectionsFilter$ = [3, n0, _LVICF, 0, [_SA, _VEI], [0, 0]];
-var ListVpcIngressConnectionsRequest$ = [
-    3,
-    n0,
-    _LVICR,
+var ListVpcIngressConnectionsFilter$ = [3, n0, _LVICF,
+    0,
+    [_SA, _VEI],
+    [0, 0]
+];
+var ListVpcIngressConnectionsRequest$ = [3, n0, _LVICR,
     0,
     [_F, _MR, _NT],
-    [() => ListVpcIngressConnectionsFilter$, 1, 0],
+    [() => ListVpcIngressConnectionsFilter$, 1, 0]
 ];
-var ListVpcIngressConnectionsResponse$ = [
-    3,
-    n0,
-    _LVICRi,
+var ListVpcIngressConnectionsResponse$ = [3, n0, _LVICRi,
     0,
     [_VICSL, _NT],
-    [() => VpcIngressConnectionSummaryList, 0],
+    [() => VpcIngressConnectionSummaryList, 0], 1
 ];
-var NetworkConfiguration$ = [
-    3,
-    n0,
-    _NC,
+var NetworkConfiguration$ = [3, n0, _NC,
     0,
     [_ECg, _ICn, _IAT],
-    [() => EgressConfiguration$, () => IngressConfiguration$, 0],
+    [() => EgressConfiguration$, () => IngressConfiguration$, 0]
 ];
-var ObservabilityConfiguration$ = [
-    3,
-    n0,
-    _OC,
+var ObservabilityConfiguration$ = [3, n0, _OC,
     0,
     [_OCA, _OCN, _TC, _OCR, _L, _S, _CAr, _DA],
-    [0, 0, () => TraceConfiguration$, 1, 2, 0, 4, 4],
+    [0, 0, () => TraceConfiguration$, 1, 2, 0, 4, 4]
 ];
-var ObservabilityConfigurationSummary$ = [3, n0, _OCS, 0, [_OCA, _OCN, _OCR], [0, 0, 1]];
-var OperationSummary$ = [
-    3,
-    n0,
-    _OS,
+var ObservabilityConfigurationSummary$ = [3, n0, _OCS,
+    0,
+    [_OCA, _OCN, _OCR],
+    [0, 0, 1]
+];
+var OperationSummary$ = [3, n0, _OS,
     0,
     [_Id, _T, _S, _TA, _SAt, _EA, _UA],
-    [0, 0, 0, 0, 4, 4, 4],
+    [0, 0, 0, 0, 4, 4, 4]
 ];
-var PauseServiceRequest$ = [3, n0, _PSR, 0, [_SA], [0]];
-var PauseServiceResponse$ = [3, n0, _PSRa, 0, [_Se, _OI], [[() => Service$, 0], 0]];
-var ResourceNotFoundException$ = [
-    -3,
-    n0,
-    _RNFE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`ResourceNotfound`, 400] },
+var PauseServiceRequest$ = [3, n0, _PSR,
+    0,
+    [_SA],
+    [0], 1
+];
+var PauseServiceResponse$ = [3, n0, _PSRa,
+    0,
+    [_Se, _OI],
+    [[() => Service$, 0], 0], 1
+];
+var ResourceNotFoundException$ = [-3, n0, _RNFE,
+    { [_aQE]: [`ResourceNotfound`, 400], [_e]: _c, [_hE]: 400 },
     [_Me],
-    [0],
+    [0]
 ];
 schema.TypeRegistry.for(n0).registerError(ResourceNotFoundException$, ResourceNotFoundException);
-var ResumeServiceRequest$ = [3, n0, _RSR, 0, [_SA], [0]];
-var ResumeServiceResponse$ = [3, n0, _RSRe, 0, [_Se, _OI], [[() => Service$, 0], 0]];
-var Service$ = [
-    3,
-    n0,
-    _Se,
+var ResumeServiceRequest$ = [3, n0, _RSR,
     0,
-    [_SN, _SI, _SA, _SU, _CAr, _UA, _DA, _S, _SCo, _IC, _EC, _HCC, _ASCS, _NC, _OC],
-    [
-        0,
-        0,
-        0,
-        0,
-        4,
-        4,
-        4,
-        0,
-        [() => SourceConfiguration$, 0],
-        () => InstanceConfiguration$,
-        () => EncryptionConfiguration$,
-        () => HealthCheckConfiguration$,
-        () => AutoScalingConfigurationSummary$,
-        () => NetworkConfiguration$,
-        () => ServiceObservabilityConfiguration$,
-    ],
+    [_SA],
+    [0], 1
 ];
-var ServiceObservabilityConfiguration$ = [3, n0, _SOC, 0, [_OE, _OCA], [2, 0]];
-var ServiceQuotaExceededException$ = [
-    -3,
-    n0,
-    _SQEE,
-    { [_e]: _c, [_hE]: 402, [_aQE]: [`ServiceQuotaExceeded`, 402] },
+var ResumeServiceResponse$ = [3, n0, _RSRe,
+    0,
+    [_Se, _OI],
+    [[() => Service$, 0], 0], 1
+];
+var Service$ = [3, n0, _Se,
+    0,
+    [_SN, _SI, _SA, _CAr, _UA, _S, _SCo, _IC, _ASCS, _NC, _SU, _DA, _EC, _HCC, _OC],
+    [0, 0, 0, 4, 4, 0, [() => SourceConfiguration$, 0], () => InstanceConfiguration$, () => AutoScalingConfigurationSummary$, () => NetworkConfiguration$, 0, 4, () => EncryptionConfiguration$, () => HealthCheckConfiguration$, () => ServiceObservabilityConfiguration$], 10
+];
+var ServiceObservabilityConfiguration$ = [3, n0, _SOC,
+    0,
+    [_OE, _OCA],
+    [2, 0], 1
+];
+var ServiceQuotaExceededException$ = [-3, n0, _SQEE,
+    { [_aQE]: [`ServiceQuotaExceeded`, 402], [_e]: _c, [_hE]: 402 },
     [_Me],
-    [0],
+    [0]
 ];
 schema.TypeRegistry.for(n0).registerError(ServiceQuotaExceededException$, ServiceQuotaExceededException);
-var ServiceSummary$ = [
-    3,
-    n0,
-    _SS,
+var ServiceSummary$ = [3, n0, _SS,
     0,
     [_SN, _SI, _SA, _SU, _CAr, _UA, _S],
-    [0, 0, 0, 0, 4, 4, 0],
+    [0, 0, 0, 0, 4, 4, 0]
 ];
-var SourceCodeVersion$ = [3, n0, _SCV, 0, [_T, _V], [0, 0]];
-var SourceConfiguration$ = [
-    3,
-    n0,
-    _SCo,
+var SourceCodeVersion$ = [3, n0, _SCV,
+    0,
+    [_T, _V],
+    [0, 0], 2
+];
+var SourceConfiguration$ = [3, n0, _SCo,
     0,
     [_CR, _IR, _ADE, _AC],
-    [[() => CodeRepository$, 0], [() => ImageRepository$, 0], 2, () => AuthenticationConfiguration$],
+    [[() => CodeRepository$, 0], [() => ImageRepository$, 0], 2, () => AuthenticationConfiguration$]
 ];
-var StartDeploymentRequest$ = [3, n0, _SDR, 0, [_SA], [0]];
-var StartDeploymentResponse$ = [3, n0, _SDRt, 0, [_OI], [0]];
-var Tag$ = [3, n0, _Tag, 0, [_K, _V], [0, 0]];
-var TagResourceRequest$ = [3, n0, _TRR, 0, [_RA, _Ta], [0, () => TagList]];
-var TagResourceResponse$ = [3, n0, _TRRa, 0, [], []];
-var TraceConfiguration$ = [3, n0, _TC, 0, [_Ve], [0]];
-var UntagResourceRequest$ = [3, n0, _URR, 0, [_RA, _TK], [0, 64 | 0]];
-var UntagResourceResponse$ = [3, n0, _URRn, 0, [], []];
-var UpdateDefaultAutoScalingConfigurationRequest$ = [3, n0, _UDASCR, 0, [_ASCA], [0]];
-var UpdateDefaultAutoScalingConfigurationResponse$ = [
-    3,
-    n0,
-    _UDASCRp,
+var StartDeploymentRequest$ = [3, n0, _SDR,
+    0,
+    [_SA],
+    [0], 1
+];
+var StartDeploymentResponse$ = [3, n0, _SDRt,
+    0,
+    [_OI],
+    [0], 1
+];
+var Tag$ = [3, n0, _Tag,
+    0,
+    [_K, _V],
+    [0, 0]
+];
+var TagResourceRequest$ = [3, n0, _TRR,
+    0,
+    [_RA, _Ta],
+    [0, () => TagList], 2
+];
+var TagResourceResponse$ = [3, n0, _TRRa,
+    0,
+    [],
+    []
+];
+var TraceConfiguration$ = [3, n0, _TC,
+    0,
+    [_Ve],
+    [0], 1
+];
+var UntagResourceRequest$ = [3, n0, _URR,
+    0,
+    [_RA, _TK],
+    [0, 64 | 0], 2
+];
+var UntagResourceResponse$ = [3, n0, _URRn,
+    0,
+    [],
+    []
+];
+var UpdateDefaultAutoScalingConfigurationRequest$ = [3, n0, _UDASCR,
+    0,
+    [_ASCA],
+    [0], 1
+];
+var UpdateDefaultAutoScalingConfigurationResponse$ = [3, n0, _UDASCRp,
     0,
     [_ASC],
-    [() => AutoScalingConfiguration$],
+    [() => AutoScalingConfiguration$], 1
 ];
-var UpdateServiceRequest$ = [
-    3,
-    n0,
-    _USR,
+var UpdateServiceRequest$ = [3, n0, _USR,
     0,
     [_SA, _SCo, _IC, _ASCA, _HCC, _NC, _OC],
-    [
-        0,
-        [() => SourceConfiguration$, 0],
-        () => InstanceConfiguration$,
-        0,
-        () => HealthCheckConfiguration$,
-        () => NetworkConfiguration$,
-        () => ServiceObservabilityConfiguration$,
-    ],
+    [0, [() => SourceConfiguration$, 0], () => InstanceConfiguration$, 0, () => HealthCheckConfiguration$, () => NetworkConfiguration$, () => ServiceObservabilityConfiguration$], 1
 ];
-var UpdateServiceResponse$ = [3, n0, _USRp, 0, [_Se, _OI], [[() => Service$, 0], 0]];
-var UpdateVpcIngressConnectionRequest$ = [
-    3,
-    n0,
-    _UVICR,
+var UpdateServiceResponse$ = [3, n0, _USRp,
+    0,
+    [_Se, _OI],
+    [[() => Service$, 0], 0], 2
+];
+var UpdateVpcIngressConnectionRequest$ = [3, n0, _UVICR,
     0,
     [_VICA, _IVC],
-    [0, () => IngressVpcConfiguration$],
+    [0, () => IngressVpcConfiguration$], 2
 ];
-var UpdateVpcIngressConnectionResponse$ = [
-    3,
-    n0,
-    _UVICRp,
+var UpdateVpcIngressConnectionResponse$ = [3, n0, _UVICRp,
     0,
     [_VIC],
-    [() => VpcIngressConnection$],
+    [() => VpcIngressConnection$], 1
 ];
-var VpcConnector$ = [
-    3,
-    n0,
-    _VC,
+var VpcConnector$ = [3, n0, _VC,
     0,
     [_VCN, _VCA, _VCR, _Su, _SG, _S, _CAr, _DA],
-    [0, 0, 1, 64 | 0, 64 | 0, 0, 4, 4],
+    [0, 0, 1, 64 | 0, 64 | 0, 0, 4, 4]
 ];
-var VpcDNSTarget$ = [3, n0, _VDNSTp, 0, [_VICA, _VI, _DN], [0, 0, 0]];
-var VpcIngressConnection$ = [
-    3,
-    n0,
-    _VIC,
+var VpcDNSTarget$ = [3, n0, _VDNSTp,
+    0,
+    [_VICA, _VI, _DN],
+    [0, 0, 0]
+];
+var VpcIngressConnection$ = [3, n0, _VIC,
     0,
     [_VICA, _VICN, _SA, _S, _AI, _DN, _IVC, _CAr, _DA],
-    [0, 0, 0, 0, 0, 0, () => IngressVpcConfiguration$, 4, 4],
+    [0, 0, 0, 0, 0, 0, () => IngressVpcConfiguration$, 4, 4]
 ];
-var VpcIngressConnectionSummary$ = [3, n0, _VICS, 0, [_VICA, _SA], [0, 0]];
+var VpcIngressConnectionSummary$ = [3, n0, _VICS,
+    0,
+    [_VICA, _SA],
+    [0, 0]
+];
 var AppRunnerServiceException$ = [-3, _sm, "AppRunnerServiceException", 0, [], []];
 schema.TypeRegistry.for(_sm).registerError(AppRunnerServiceException$, AppRunnerServiceException);
-var AutoScalingConfigurationSummaryList = [1, n0, _ASCSL, 0, () => AutoScalingConfigurationSummary$];
-var CertificateValidationRecordList = [1, n0, _CVRL, 0, () => CertificateValidationRecord$];
-var ConnectionSummaryList = [1, n0, _CSL, 0, () => ConnectionSummary$];
-var CustomDomainList = [1, n0, _CDL, 0, () => CustomDomain$];
-var ObservabilityConfigurationSummaryList = [
-    1,
-    n0,
-    _OCSL,
-    0,
-    () => ObservabilityConfigurationSummary$,
+var AutoScalingConfigurationSummaryList = [1, n0, _ASCSL,
+    0, () => AutoScalingConfigurationSummary$
 ];
-var OperationSummaryList = [1, n0, _OSL, 0, () => OperationSummary$];
-var ServiceSummaryList = [1, n0, _SSL, 0, () => ServiceSummary$];
-var TagList = [1, n0, _TL, 0, () => Tag$];
-var VpcConnectors = [1, n0, _VCp, 0, () => VpcConnector$];
-var VpcDNSTargetList = [1, n0, _VDNSTL, 0, () => VpcDNSTarget$];
-var VpcIngressConnectionSummaryList = [1, n0, _VICSL, 0, () => VpcIngressConnectionSummary$];
-var RuntimeEnvironmentSecrets = [
-    2,
-    n0,
-    _RES,
-    0,
-    [() => RuntimeEnvironmentSecretsName, 0],
-    [() => RuntimeEnvironmentSecretsValue, 0],
+var CertificateValidationRecordList = [1, n0, _CVRL,
+    0, () => CertificateValidationRecord$
 ];
-var RuntimeEnvironmentVariables = [
-    2,
-    n0,
-    _REV,
-    0,
-    [() => RuntimeEnvironmentVariablesKey, 0],
-    [() => RuntimeEnvironmentVariablesValue, 0],
+var ConnectionSummaryList = [1, n0, _CSL,
+    0, () => ConnectionSummary$
 ];
-var AssociateCustomDomain$ = [
-    9,
-    n0,
-    _ACD,
-    0,
-    () => AssociateCustomDomainRequest$,
-    () => AssociateCustomDomainResponse$,
+var CustomDomainList = [1, n0, _CDL,
+    0, () => CustomDomain$
 ];
-var CreateAutoScalingConfiguration$ = [
-    9,
-    n0,
-    _CASC,
-    0,
-    () => CreateAutoScalingConfigurationRequest$,
-    () => CreateAutoScalingConfigurationResponse$,
+var ObservabilityConfigurationSummaryList = [1, n0, _OCSL,
+    0, () => ObservabilityConfigurationSummary$
 ];
-var CreateConnection$ = [
-    9,
-    n0,
-    _CCr,
-    0,
-    () => CreateConnectionRequest$,
-    () => CreateConnectionResponse$,
+var OperationSummaryList = [1, n0, _OSL,
+    0, () => OperationSummary$
 ];
-var CreateObservabilityConfiguration$ = [
-    9,
-    n0,
-    _COC,
-    0,
-    () => CreateObservabilityConfigurationRequest$,
-    () => CreateObservabilityConfigurationResponse$,
+var ServiceSummaryList = [1, n0, _SSL,
+    0, () => ServiceSummary$
 ];
-var CreateService$ = [
-    9,
-    n0,
-    _CSr,
-    0,
-    () => CreateServiceRequest$,
-    () => CreateServiceResponse$,
+var TagList = [1, n0, _TL,
+    0, () => Tag$
 ];
-var CreateVpcConnector$ = [
-    9,
-    n0,
-    _CVC,
-    0,
-    () => CreateVpcConnectorRequest$,
-    () => CreateVpcConnectorResponse$,
+var VpcConnectors = [1, n0, _VCp,
+    0, () => VpcConnector$
 ];
-var CreateVpcIngressConnection$ = [
-    9,
-    n0,
-    _CVIC,
-    0,
-    () => CreateVpcIngressConnectionRequest$,
-    () => CreateVpcIngressConnectionResponse$,
+var VpcDNSTargetList = [1, n0, _VDNSTL,
+    0, () => VpcDNSTarget$
 ];
-var DeleteAutoScalingConfiguration$ = [
-    9,
-    n0,
-    _DASC,
-    0,
-    () => DeleteAutoScalingConfigurationRequest$,
-    () => DeleteAutoScalingConfigurationResponse$,
+var VpcIngressConnectionSummaryList = [1, n0, _VICSL,
+    0, () => VpcIngressConnectionSummary$
 ];
-var DeleteConnection$ = [
-    9,
-    n0,
-    _DC,
-    0,
-    () => DeleteConnectionRequest$,
-    () => DeleteConnectionResponse$,
+var RuntimeEnvironmentSecrets = [2, n0, _RES,
+    0, [() => RuntimeEnvironmentSecretsName,
+        0],
+    [() => RuntimeEnvironmentSecretsValue,
+        0]
 ];
-var DeleteObservabilityConfiguration$ = [
-    9,
-    n0,
-    _DOC,
-    0,
-    () => DeleteObservabilityConfigurationRequest$,
-    () => DeleteObservabilityConfigurationResponse$,
+var RuntimeEnvironmentVariables = [2, n0, _REV,
+    0, [() => RuntimeEnvironmentVariablesKey,
+        0],
+    [() => RuntimeEnvironmentVariablesValue,
+        0]
 ];
-var DeleteService$ = [
-    9,
-    n0,
-    _DS,
-    0,
-    () => DeleteServiceRequest$,
-    () => DeleteServiceResponse$,
+var AssociateCustomDomain$ = [9, n0, _ACD,
+    0, () => AssociateCustomDomainRequest$, () => AssociateCustomDomainResponse$
 ];
-var DeleteVpcConnector$ = [
-    9,
-    n0,
-    _DVC,
-    0,
-    () => DeleteVpcConnectorRequest$,
-    () => DeleteVpcConnectorResponse$,
+var CreateAutoScalingConfiguration$ = [9, n0, _CASC,
+    0, () => CreateAutoScalingConfigurationRequest$, () => CreateAutoScalingConfigurationResponse$
 ];
-var DeleteVpcIngressConnection$ = [
-    9,
-    n0,
-    _DVIC,
-    0,
-    () => DeleteVpcIngressConnectionRequest$,
-    () => DeleteVpcIngressConnectionResponse$,
+var CreateConnection$ = [9, n0, _CCr,
+    0, () => CreateConnectionRequest$, () => CreateConnectionResponse$
 ];
-var DescribeAutoScalingConfiguration$ = [
-    9,
-    n0,
-    _DASCe,
-    0,
-    () => DescribeAutoScalingConfigurationRequest$,
-    () => DescribeAutoScalingConfigurationResponse$,
+var CreateObservabilityConfiguration$ = [9, n0, _COC,
+    0, () => CreateObservabilityConfigurationRequest$, () => CreateObservabilityConfigurationResponse$
 ];
-var DescribeCustomDomains$ = [
-    9,
-    n0,
-    _DCD,
-    0,
-    () => DescribeCustomDomainsRequest$,
-    () => DescribeCustomDomainsResponse$,
+var CreateService$ = [9, n0, _CSr,
+    0, () => CreateServiceRequest$, () => CreateServiceResponse$
 ];
-var DescribeObservabilityConfiguration$ = [
-    9,
-    n0,
-    _DOCe,
-    0,
-    () => DescribeObservabilityConfigurationRequest$,
-    () => DescribeObservabilityConfigurationResponse$,
+var CreateVpcConnector$ = [9, n0, _CVC,
+    0, () => CreateVpcConnectorRequest$, () => CreateVpcConnectorResponse$
 ];
-var DescribeService$ = [
-    9,
-    n0,
-    _DSe,
-    0,
-    () => DescribeServiceRequest$,
-    () => DescribeServiceResponse$,
+var CreateVpcIngressConnection$ = [9, n0, _CVIC,
+    0, () => CreateVpcIngressConnectionRequest$, () => CreateVpcIngressConnectionResponse$
 ];
-var DescribeVpcConnector$ = [
-    9,
-    n0,
-    _DVCe,
-    0,
-    () => DescribeVpcConnectorRequest$,
-    () => DescribeVpcConnectorResponse$,
+var DeleteAutoScalingConfiguration$ = [9, n0, _DASC,
+    0, () => DeleteAutoScalingConfigurationRequest$, () => DeleteAutoScalingConfigurationResponse$
 ];
-var DescribeVpcIngressConnection$ = [
-    9,
-    n0,
-    _DVICe,
-    0,
-    () => DescribeVpcIngressConnectionRequest$,
-    () => DescribeVpcIngressConnectionResponse$,
+var DeleteConnection$ = [9, n0, _DC,
+    0, () => DeleteConnectionRequest$, () => DeleteConnectionResponse$
 ];
-var DisassociateCustomDomain$ = [
-    9,
-    n0,
-    _DCDi,
-    0,
-    () => DisassociateCustomDomainRequest$,
-    () => DisassociateCustomDomainResponse$,
+var DeleteObservabilityConfiguration$ = [9, n0, _DOC,
+    0, () => DeleteObservabilityConfigurationRequest$, () => DeleteObservabilityConfigurationResponse$
 ];
-var ListAutoScalingConfigurations$ = [
-    9,
-    n0,
-    _LASC,
-    0,
-    () => ListAutoScalingConfigurationsRequest$,
-    () => ListAutoScalingConfigurationsResponse$,
+var DeleteService$ = [9, n0, _DS,
+    0, () => DeleteServiceRequest$, () => DeleteServiceResponse$
 ];
-var ListConnections$ = [
-    9,
-    n0,
-    _LC,
-    0,
-    () => ListConnectionsRequest$,
-    () => ListConnectionsResponse$,
+var DeleteVpcConnector$ = [9, n0, _DVC,
+    0, () => DeleteVpcConnectorRequest$, () => DeleteVpcConnectorResponse$
 ];
-var ListObservabilityConfigurations$ = [
-    9,
-    n0,
-    _LOC,
-    0,
-    () => ListObservabilityConfigurationsRequest$,
-    () => ListObservabilityConfigurationsResponse$,
+var DeleteVpcIngressConnection$ = [9, n0, _DVIC,
+    0, () => DeleteVpcIngressConnectionRequest$, () => DeleteVpcIngressConnectionResponse$
 ];
-var ListOperations$ = [
-    9,
-    n0,
-    _LOi,
-    0,
-    () => ListOperationsRequest$,
-    () => ListOperationsResponse$,
+var DescribeAutoScalingConfiguration$ = [9, n0, _DASCe,
+    0, () => DescribeAutoScalingConfigurationRequest$, () => DescribeAutoScalingConfigurationResponse$
 ];
-var ListServices$ = [
-    9,
-    n0,
-    _LS,
-    0,
-    () => ListServicesRequest$,
-    () => ListServicesResponse$,
+var DescribeCustomDomains$ = [9, n0, _DCD,
+    0, () => DescribeCustomDomainsRequest$, () => DescribeCustomDomainsResponse$
 ];
-var ListServicesForAutoScalingConfiguration$ = [
-    9,
-    n0,
-    _LSFASC,
-    0,
-    () => ListServicesForAutoScalingConfigurationRequest$,
-    () => ListServicesForAutoScalingConfigurationResponse$,
+var DescribeObservabilityConfiguration$ = [9, n0, _DOCe,
+    0, () => DescribeObservabilityConfigurationRequest$, () => DescribeObservabilityConfigurationResponse$
 ];
-var ListTagsForResource$ = [
-    9,
-    n0,
-    _LTFR,
-    0,
-    () => ListTagsForResourceRequest$,
-    () => ListTagsForResourceResponse$,
+var DescribeService$ = [9, n0, _DSe,
+    0, () => DescribeServiceRequest$, () => DescribeServiceResponse$
 ];
-var ListVpcConnectors$ = [
-    9,
-    n0,
-    _LVC,
-    0,
-    () => ListVpcConnectorsRequest$,
-    () => ListVpcConnectorsResponse$,
+var DescribeVpcConnector$ = [9, n0, _DVCe,
+    0, () => DescribeVpcConnectorRequest$, () => DescribeVpcConnectorResponse$
 ];
-var ListVpcIngressConnections$ = [
-    9,
-    n0,
-    _LVIC,
-    0,
-    () => ListVpcIngressConnectionsRequest$,
-    () => ListVpcIngressConnectionsResponse$,
+var DescribeVpcIngressConnection$ = [9, n0, _DVICe,
+    0, () => DescribeVpcIngressConnectionRequest$, () => DescribeVpcIngressConnectionResponse$
 ];
-var PauseService$ = [
-    9,
-    n0,
-    _PS,
-    0,
-    () => PauseServiceRequest$,
-    () => PauseServiceResponse$,
+var DisassociateCustomDomain$ = [9, n0, _DCDi,
+    0, () => DisassociateCustomDomainRequest$, () => DisassociateCustomDomainResponse$
 ];
-var ResumeService$ = [
-    9,
-    n0,
-    _RS,
-    0,
-    () => ResumeServiceRequest$,
-    () => ResumeServiceResponse$,
+var ListAutoScalingConfigurations$ = [9, n0, _LASC,
+    0, () => ListAutoScalingConfigurationsRequest$, () => ListAutoScalingConfigurationsResponse$
 ];
-var StartDeployment$ = [
-    9,
-    n0,
-    _SDt,
-    0,
-    () => StartDeploymentRequest$,
-    () => StartDeploymentResponse$,
+var ListConnections$ = [9, n0, _LC,
+    0, () => ListConnectionsRequest$, () => ListConnectionsResponse$
 ];
-var TagResource$ = [9, n0, _TR, 0, () => TagResourceRequest$, () => TagResourceResponse$];
-var UntagResource$ = [
-    9,
-    n0,
-    _UR,
-    0,
-    () => UntagResourceRequest$,
-    () => UntagResourceResponse$,
+var ListObservabilityConfigurations$ = [9, n0, _LOC,
+    0, () => ListObservabilityConfigurationsRequest$, () => ListObservabilityConfigurationsResponse$
 ];
-var UpdateDefaultAutoScalingConfiguration$ = [
-    9,
-    n0,
-    _UDASC,
-    0,
-    () => UpdateDefaultAutoScalingConfigurationRequest$,
-    () => UpdateDefaultAutoScalingConfigurationResponse$,
+var ListOperations$ = [9, n0, _LOi,
+    0, () => ListOperationsRequest$, () => ListOperationsResponse$
 ];
-var UpdateService$ = [
-    9,
-    n0,
-    _US,
-    0,
-    () => UpdateServiceRequest$,
-    () => UpdateServiceResponse$,
+var ListServices$ = [9, n0, _LS,
+    0, () => ListServicesRequest$, () => ListServicesResponse$
 ];
-var UpdateVpcIngressConnection$ = [
-    9,
-    n0,
-    _UVIC,
-    0,
-    () => UpdateVpcIngressConnectionRequest$,
-    () => UpdateVpcIngressConnectionResponse$,
+var ListServicesForAutoScalingConfiguration$ = [9, n0, _LSFASC,
+    0, () => ListServicesForAutoScalingConfigurationRequest$, () => ListServicesForAutoScalingConfigurationResponse$
+];
+var ListTagsForResource$ = [9, n0, _LTFR,
+    0, () => ListTagsForResourceRequest$, () => ListTagsForResourceResponse$
+];
+var ListVpcConnectors$ = [9, n0, _LVC,
+    0, () => ListVpcConnectorsRequest$, () => ListVpcConnectorsResponse$
+];
+var ListVpcIngressConnections$ = [9, n0, _LVIC,
+    0, () => ListVpcIngressConnectionsRequest$, () => ListVpcIngressConnectionsResponse$
+];
+var PauseService$ = [9, n0, _PS,
+    0, () => PauseServiceRequest$, () => PauseServiceResponse$
+];
+var ResumeService$ = [9, n0, _RS,
+    0, () => ResumeServiceRequest$, () => ResumeServiceResponse$
+];
+var StartDeployment$ = [9, n0, _SDt,
+    0, () => StartDeploymentRequest$, () => StartDeploymentResponse$
+];
+var TagResource$ = [9, n0, _TR,
+    0, () => TagResourceRequest$, () => TagResourceResponse$
+];
+var UntagResource$ = [9, n0, _UR,
+    0, () => UntagResourceRequest$, () => UntagResourceResponse$
+];
+var UpdateDefaultAutoScalingConfiguration$ = [9, n0, _UDASC,
+    0, () => UpdateDefaultAutoScalingConfigurationRequest$, () => UpdateDefaultAutoScalingConfigurationResponse$
+];
+var UpdateService$ = [9, n0, _US,
+    0, () => UpdateServiceRequest$, () => UpdateServiceResponse$
+];
+var UpdateVpcIngressConnection$ = [9, n0, _UVIC,
+    0, () => UpdateVpcIngressConnectionRequest$, () => UpdateVpcIngressConnectionResponse$
 ];
 
 class AssociateCustomDomainCommand extends smithyClient.Command
@@ -5515,9 +5392,9 @@ const paginateListObservabilityConfigurations = core.createPaginator(AppRunnerCl
 
 const paginateListOperations = core.createPaginator(AppRunnerClient, ListOperationsCommand, "NextToken", "NextToken", "MaxResults");
 
-const paginateListServicesForAutoScalingConfiguration = core.createPaginator(AppRunnerClient, ListServicesForAutoScalingConfigurationCommand, "NextToken", "NextToken", "MaxResults");
-
 const paginateListServices = core.createPaginator(AppRunnerClient, ListServicesCommand, "NextToken", "NextToken", "MaxResults");
+
+const paginateListServicesForAutoScalingConfiguration = core.createPaginator(AppRunnerClient, ListServicesForAutoScalingConfigurationCommand, "NextToken", "NextToken", "MaxResults");
 
 const paginateListVpcConnectors = core.createPaginator(AppRunnerClient, ListVpcConnectorsCommand, "NextToken", "NextToken", "MaxResults");
 
@@ -5912,11 +5789,9 @@ const getRuntimeConfig = (config) => {
         authSchemePreference: config?.authSchemePreference ?? (0, node_config_provider_1.loadConfig)(core_1.NODE_AUTH_SCHEME_PREFERENCE_OPTIONS, loaderConfig),
         bodyLengthChecker: config?.bodyLengthChecker ?? util_body_length_node_1.calculateBodyLength,
         credentialDefaultProvider: config?.credentialDefaultProvider ?? credential_provider_node_1.defaultProvider,
-        defaultUserAgentProvider: config?.defaultUserAgentProvider ??
-            (0, util_user_agent_node_1.createDefaultUserAgentProvider)({ serviceId: clientSharedValues.serviceId, clientVersion: package_json_1.default.version }),
+        defaultUserAgentProvider: config?.defaultUserAgentProvider ?? (0, util_user_agent_node_1.createDefaultUserAgentProvider)({ serviceId: clientSharedValues.serviceId, clientVersion: package_json_1.default.version }),
         maxAttempts: config?.maxAttempts ?? (0, node_config_provider_1.loadConfig)(middleware_retry_1.NODE_MAX_ATTEMPT_CONFIG_OPTIONS, config),
-        region: config?.region ??
-            (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_REGION_CONFIG_OPTIONS, { ...config_resolver_1.NODE_REGION_CONFIG_FILE_OPTIONS, ...loaderConfig }),
+        region: config?.region ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_REGION_CONFIG_OPTIONS, { ...config_resolver_1.NODE_REGION_CONFIG_FILE_OPTIONS, ...loaderConfig }),
         requestHandler: node_http_handler_1.NodeHttpHandler.create(config?.requestHandler ?? defaultConfigProvider),
         retryMode: config?.retryMode ??
             (0, node_config_provider_1.loadConfig)({
@@ -6217,7 +6092,15 @@ const resolveAwsSdkSigV4Config = (config) => {
             });
             const boundProvider = bindCallerConfig(config, memoizedProvider);
             if (isUserSupplied && !boundProvider.attributed) {
-                resolvedCredentials = async (options) => boundProvider(options).then((creds) => client.setCredentialFeature(creds, "CREDENTIALS_CODE", "e"));
+                const isCredentialObject = typeof inputCredentials === "object" && inputCredentials !== null;
+                resolvedCredentials = async (options) => {
+                    const creds = await boundProvider(options);
+                    const attributedCreds = creds;
+                    if (isCredentialObject && (!attributedCreds.$source || Object.keys(attributedCreds.$source).length === 0)) {
+                        return client.setCredentialFeature(attributedCreds, "CREDENTIALS_CODE", "e");
+                    }
+                    return attributedCreds;
+                };
                 resolvedCredentials.memoized = boundProvider.memoized;
                 resolvedCredentials.configBound = boundProvider.configBound;
                 resolvedCredentials.attributed = true;
@@ -6595,6 +6478,30 @@ function* deserializingStructIterator(ns, sourceObject, nameTrait) {
     }
 }
 
+class UnionSerde {
+    from;
+    to;
+    keys;
+    constructor(from, to) {
+        this.from = from;
+        this.to = to;
+        this.keys = new Set(Object.keys(this.from).filter((k) => k !== "__type"));
+    }
+    mark(key) {
+        this.keys.delete(key);
+    }
+    hasUnknown() {
+        return this.keys.size === 1 && Object.keys(this.to).length === 0;
+    }
+    writeUnknown() {
+        if (this.hasUnknown()) {
+            const k = this.keys.values().next().value;
+            const v = this.from[k];
+            this.to.$unknown = [k, v];
+        }
+    }
+}
+
 function jsonReviver(key, value, context) {
     if (context?.source) {
         const numericString = context.source;
@@ -6686,12 +6593,40 @@ class JsonShapeDeserializer extends SerdeContextConfig {
         const ns = schema.NormalizedSchema.of(schema$1);
         if (isObject) {
             if (ns.isStructSchema()) {
+                const record = value;
+                const union = ns.isUnionSchema();
                 const out = {};
-                for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
-                    const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                    const deserializedValue = this._read(memberSchema, value[fromKey]);
-                    if (deserializedValue != null) {
-                        out[memberName] = deserializedValue;
+                let nameMap = void 0;
+                const { jsonName } = this.settings;
+                if (jsonName) {
+                    nameMap = {};
+                }
+                let unionSerde;
+                if (union) {
+                    unionSerde = new UnionSerde(record, out);
+                }
+                for (const [memberName, memberSchema] of deserializingStructIterator(ns, record, jsonName ? "jsonName" : false)) {
+                    let fromKey = memberName;
+                    if (jsonName) {
+                        fromKey = memberSchema.getMergedTraits().jsonName ?? fromKey;
+                        nameMap[fromKey] = memberName;
+                    }
+                    if (union) {
+                        unionSerde.mark(fromKey);
+                    }
+                    if (record[fromKey] != null) {
+                        out[memberName] = this._read(memberSchema, record[fromKey]);
+                    }
+                }
+                if (union) {
+                    unionSerde.writeUnknown();
+                }
+                else if (typeof record.__type === "string") {
+                    for (const [k, v] of Object.entries(record)) {
+                        const t = jsonName ? nameMap[k] ?? k : k;
+                        if (!(t in out)) {
+                            out[t] = v;
+                        }
                     }
                 }
                 return out;
@@ -6872,13 +6807,37 @@ class JsonShapeSerializer extends SerdeContextConfig {
         const ns = schema.NormalizedSchema.of(schema$1);
         if (isObject) {
             if (ns.isStructSchema()) {
+                const record = value;
                 const out = {};
-                for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
-                    const serializableValue = this._write(memberSchema, value[memberName], ns);
+                const { jsonName } = this.settings;
+                let nameMap = void 0;
+                if (jsonName) {
+                    nameMap = {};
+                }
+                for (const [memberName, memberSchema] of serializingStructIterator(ns, record)) {
+                    const serializableValue = this._write(memberSchema, record[memberName], ns);
                     if (serializableValue !== undefined) {
-                        const jsonName = memberSchema.getMergedTraits().jsonName;
-                        const targetKey = this.settings.jsonName ? jsonName ?? memberName : memberName;
+                        let targetKey = memberName;
+                        if (jsonName) {
+                            targetKey = memberSchema.getMergedTraits().jsonName ?? memberName;
+                            nameMap[memberName] = targetKey;
+                        }
                         out[targetKey] = serializableValue;
+                    }
+                }
+                if (ns.isUnionSchema() && Object.keys(out).length === 0) {
+                    const { $unknown } = record;
+                    if (Array.isArray($unknown)) {
+                        const [k, v] = $unknown;
+                        out[k] = this._write(15, v);
+                    }
+                }
+                else if (typeof record.__type === "string") {
+                    for (const [k, v] of Object.entries(record)) {
+                        const targetKey = jsonName ? nameMap[k] ?? k : k;
+                        if (!(targetKey in out)) {
+                            out[targetKey] = this._write(15, v);
+                        }
                     }
                 }
                 return out;
@@ -7287,14 +7246,25 @@ class XmlShapeDeserializer extends SerdeContextConfig {
                 return buffer;
             }
             if (ns.isStructSchema()) {
+                const union = ns.isUnionSchema();
+                let unionSerde;
+                if (union) {
+                    unionSerde = new UnionSerde(value, buffer);
+                }
                 for (const [memberName, memberSchema] of ns.structIterator()) {
                     const memberTraits = memberSchema.getMergedTraits();
                     const xmlObjectKey = !memberTraits.httpPayload
                         ? memberSchema.getMemberTraits().xmlName ?? memberName
                         : memberTraits.xmlName ?? memberSchema.getName();
+                    if (union) {
+                        unionSerde.mark(xmlObjectKey);
+                    }
                     if (value[xmlObjectKey] != null) {
                         buffer[memberName] = this.readSchema(memberSchema, value[xmlObjectKey]);
                     }
+                }
+                if (union) {
+                    unionSerde.writeUnknown();
                 }
                 return buffer;
             }
@@ -7399,7 +7369,22 @@ class QueryShapeSerializer extends SerdeContextConfig {
             }
         }
         else if (ns.isDocumentSchema()) {
-            throw new Error(`@aws-sdk/core/protocols - QuerySerializer unsupported document type ${ns.getName(true)}`);
+            if (Array.isArray(value)) {
+                this.write(64 | 15, value, prefix);
+            }
+            else if (value instanceof Date) {
+                this.write(4, value, prefix);
+            }
+            else if (value instanceof Uint8Array) {
+                this.write(21, value, prefix);
+            }
+            else if (value && typeof value === "object") {
+                this.write(128 | 15, value, prefix);
+            }
+            else {
+                this.writeKey(prefix);
+                this.writeValue(String(value));
+            }
         }
         else if (ns.isListSchema()) {
             if (Array.isArray(value)) {
@@ -7447,6 +7432,7 @@ class QueryShapeSerializer extends SerdeContextConfig {
         }
         else if (ns.isStructSchema()) {
             if (value && typeof value === "object") {
+                let didWriteMember = false;
                 for (const [memberName, member] of serializingStructIterator(ns, value)) {
                     if (value[memberName] == null && !member.isIdempotencyToken()) {
                         continue;
@@ -7454,6 +7440,15 @@ class QueryShapeSerializer extends SerdeContextConfig {
                     const suffix = this.getKey(memberName, member.getMergedTraits().xmlName);
                     const key = `${prefix}${suffix}`;
                     this.write(member, value[memberName], key);
+                    didWriteMember = true;
+                }
+                if (!didWriteMember && ns.isUnionSchema()) {
+                    const { $unknown } = value;
+                    if (Array.isArray($unknown)) {
+                        const [k, v] = $unknown;
+                        const key = `${prefix}${k}`;
+                        this.write(15, v, key);
+                    }
                 }
             }
         }
@@ -7761,6 +7756,22 @@ class XmlShapeSerializer extends SerdeContextConfig {
                     structXmlNode.addChildNode(memberNode);
                 }
             }
+        }
+        const { $unknown } = value;
+        if ($unknown && ns.isUnionSchema() && Array.isArray($unknown) && Object.keys(value).length === 1) {
+            const [k, v] = $unknown;
+            const node = xmlBuilder.XmlNode.of(k);
+            if (typeof v !== "string") {
+                if (value instanceof xmlBuilder.XmlNode || value instanceof xmlBuilder.XmlText) {
+                    structXmlNode.addChildNode(value);
+                }
+                else {
+                    throw new Error(`@aws-sdk - $unknown union member in XML requires ` +
+                        `value of type string, @aws-sdk/xml-builder::XmlNode or XmlText.`);
+                }
+            }
+            this.writeSimpleInto(0, v, node, xmlns);
+            structXmlNode.addChildNode(node);
         }
         if (xmlns) {
             structXmlNode.addAttribute(xmlnsAttr, xmlns);
@@ -8432,6 +8443,30 @@ function* deserializingStructIterator(ns, sourceObject, nameTrait) {
     }
 }
 
+class UnionSerde {
+    from;
+    to;
+    keys;
+    constructor(from, to) {
+        this.from = from;
+        this.to = to;
+        this.keys = new Set(Object.keys(this.from).filter((k) => k !== "__type"));
+    }
+    mark(key) {
+        this.keys.delete(key);
+    }
+    hasUnknown() {
+        return this.keys.size === 1 && Object.keys(this.to).length === 0;
+    }
+    writeUnknown() {
+        if (this.hasUnknown()) {
+            const k = this.keys.values().next().value;
+            const v = this.from[k];
+            this.to.$unknown = [k, v];
+        }
+    }
+}
+
 function jsonReviver(key, value, context) {
     if (context?.source) {
         const numericString = context.source;
@@ -8523,12 +8558,40 @@ class JsonShapeDeserializer extends SerdeContextConfig {
         const ns = schema.NormalizedSchema.of(schema$1);
         if (isObject) {
             if (ns.isStructSchema()) {
+                const record = value;
+                const union = ns.isUnionSchema();
                 const out = {};
-                for (const [memberName, memberSchema] of deserializingStructIterator(ns, value, this.settings.jsonName ? "jsonName" : false)) {
-                    const fromKey = this.settings.jsonName ? memberSchema.getMergedTraits().jsonName ?? memberName : memberName;
-                    const deserializedValue = this._read(memberSchema, value[fromKey]);
-                    if (deserializedValue != null) {
-                        out[memberName] = deserializedValue;
+                let nameMap = void 0;
+                const { jsonName } = this.settings;
+                if (jsonName) {
+                    nameMap = {};
+                }
+                let unionSerde;
+                if (union) {
+                    unionSerde = new UnionSerde(record, out);
+                }
+                for (const [memberName, memberSchema] of deserializingStructIterator(ns, record, jsonName ? "jsonName" : false)) {
+                    let fromKey = memberName;
+                    if (jsonName) {
+                        fromKey = memberSchema.getMergedTraits().jsonName ?? fromKey;
+                        nameMap[fromKey] = memberName;
+                    }
+                    if (union) {
+                        unionSerde.mark(fromKey);
+                    }
+                    if (record[fromKey] != null) {
+                        out[memberName] = this._read(memberSchema, record[fromKey]);
+                    }
+                }
+                if (union) {
+                    unionSerde.writeUnknown();
+                }
+                else if (typeof record.__type === "string") {
+                    for (const [k, v] of Object.entries(record)) {
+                        const t = jsonName ? nameMap[k] ?? k : k;
+                        if (!(t in out)) {
+                            out[t] = v;
+                        }
                     }
                 }
                 return out;
@@ -8709,13 +8772,37 @@ class JsonShapeSerializer extends SerdeContextConfig {
         const ns = schema.NormalizedSchema.of(schema$1);
         if (isObject) {
             if (ns.isStructSchema()) {
+                const record = value;
                 const out = {};
-                for (const [memberName, memberSchema] of serializingStructIterator(ns, value)) {
-                    const serializableValue = this._write(memberSchema, value[memberName], ns);
+                const { jsonName } = this.settings;
+                let nameMap = void 0;
+                if (jsonName) {
+                    nameMap = {};
+                }
+                for (const [memberName, memberSchema] of serializingStructIterator(ns, record)) {
+                    const serializableValue = this._write(memberSchema, record[memberName], ns);
                     if (serializableValue !== undefined) {
-                        const jsonName = memberSchema.getMergedTraits().jsonName;
-                        const targetKey = this.settings.jsonName ? jsonName ?? memberName : memberName;
+                        let targetKey = memberName;
+                        if (jsonName) {
+                            targetKey = memberSchema.getMergedTraits().jsonName ?? memberName;
+                            nameMap[memberName] = targetKey;
+                        }
                         out[targetKey] = serializableValue;
+                    }
+                }
+                if (ns.isUnionSchema() && Object.keys(out).length === 0) {
+                    const { $unknown } = record;
+                    if (Array.isArray($unknown)) {
+                        const [k, v] = $unknown;
+                        out[k] = this._write(15, v);
+                    }
+                }
+                else if (typeof record.__type === "string") {
+                    for (const [k, v] of Object.entries(record)) {
+                        const targetKey = jsonName ? nameMap[k] ?? k : k;
+                        if (!(targetKey in out)) {
+                            out[targetKey] = this._write(15, v);
+                        }
                     }
                 }
                 return out;
@@ -9124,14 +9211,25 @@ class XmlShapeDeserializer extends SerdeContextConfig {
                 return buffer;
             }
             if (ns.isStructSchema()) {
+                const union = ns.isUnionSchema();
+                let unionSerde;
+                if (union) {
+                    unionSerde = new UnionSerde(value, buffer);
+                }
                 for (const [memberName, memberSchema] of ns.structIterator()) {
                     const memberTraits = memberSchema.getMergedTraits();
                     const xmlObjectKey = !memberTraits.httpPayload
                         ? memberSchema.getMemberTraits().xmlName ?? memberName
                         : memberTraits.xmlName ?? memberSchema.getName();
+                    if (union) {
+                        unionSerde.mark(xmlObjectKey);
+                    }
                     if (value[xmlObjectKey] != null) {
                         buffer[memberName] = this.readSchema(memberSchema, value[xmlObjectKey]);
                     }
+                }
+                if (union) {
+                    unionSerde.writeUnknown();
                 }
                 return buffer;
             }
@@ -9236,7 +9334,22 @@ class QueryShapeSerializer extends SerdeContextConfig {
             }
         }
         else if (ns.isDocumentSchema()) {
-            throw new Error(`@aws-sdk/core/protocols - QuerySerializer unsupported document type ${ns.getName(true)}`);
+            if (Array.isArray(value)) {
+                this.write(64 | 15, value, prefix);
+            }
+            else if (value instanceof Date) {
+                this.write(4, value, prefix);
+            }
+            else if (value instanceof Uint8Array) {
+                this.write(21, value, prefix);
+            }
+            else if (value && typeof value === "object") {
+                this.write(128 | 15, value, prefix);
+            }
+            else {
+                this.writeKey(prefix);
+                this.writeValue(String(value));
+            }
         }
         else if (ns.isListSchema()) {
             if (Array.isArray(value)) {
@@ -9284,6 +9397,7 @@ class QueryShapeSerializer extends SerdeContextConfig {
         }
         else if (ns.isStructSchema()) {
             if (value && typeof value === "object") {
+                let didWriteMember = false;
                 for (const [memberName, member] of serializingStructIterator(ns, value)) {
                     if (value[memberName] == null && !member.isIdempotencyToken()) {
                         continue;
@@ -9291,6 +9405,15 @@ class QueryShapeSerializer extends SerdeContextConfig {
                     const suffix = this.getKey(memberName, member.getMergedTraits().xmlName);
                     const key = `${prefix}${suffix}`;
                     this.write(member, value[memberName], key);
+                    didWriteMember = true;
+                }
+                if (!didWriteMember && ns.isUnionSchema()) {
+                    const { $unknown } = value;
+                    if (Array.isArray($unknown)) {
+                        const [k, v] = $unknown;
+                        const key = `${prefix}${k}`;
+                        this.write(15, v, key);
+                    }
                 }
             }
         }
@@ -9598,6 +9721,22 @@ class XmlShapeSerializer extends SerdeContextConfig {
                     structXmlNode.addChildNode(memberNode);
                 }
             }
+        }
+        const { $unknown } = value;
+        if ($unknown && ns.isUnionSchema() && Array.isArray($unknown) && Object.keys(value).length === 1) {
+            const [k, v] = $unknown;
+            const node = xmlBuilder.XmlNode.of(k);
+            if (typeof v !== "string") {
+                if (value instanceof xmlBuilder.XmlNode || value instanceof xmlBuilder.XmlText) {
+                    structXmlNode.addChildNode(value);
+                }
+                else {
+                    throw new Error(`@aws-sdk - $unknown union member in XML requires ` +
+                        `value of type string, @aws-sdk/xml-builder::XmlNode or XmlText.`);
+                }
+            }
+            this.writeSimpleInto(0, v, node, xmlns);
+            structXmlNode.addChildNode(node);
         }
         if (xmlns) {
             structXmlNode.addAttribute(xmlnsAttr, xmlns);
@@ -10796,7 +10935,7 @@ var partitions = [
 		regionRegex: "^eusc\\-(de)\\-\\w+\\-\\d+$",
 		regions: {
 			"eusc-de-east-1": {
-				description: "EU (Germany)"
+				description: "AWS European Sovereign Cloud (Germany)"
 			}
 		}
 	},
@@ -11351,7 +11490,7 @@ exports.InvokeStore = void 0;
                 if (globalThis.awslambda?.InvokeStore) {
                     delete globalThis.awslambda.InvokeStore;
                 }
-                globalThis.awslambda = {};
+                globalThis.awslambda = { InvokeStore: undefined };
             },
         }
         : undefined;
@@ -12775,11 +12914,21 @@ class CborShapeSerializer extends protocols.SerdeContext {
                     const [k, v] = sourceObject.$unknown;
                     newObject[k] = v;
                 }
+                else if (typeof sourceObject.__type === "string") {
+                    for (const [k, v] of Object.entries(sourceObject)) {
+                        if (!(k in newObject)) {
+                            newObject[k] = this.serialize(15, v);
+                        }
+                    }
+                }
             }
             else if (ns.isDocumentSchema()) {
                 for (const key of Object.keys(sourceObject)) {
                     newObject[key] = this.serialize(ns.getValueSchema(), sourceObject[key]);
                 }
+            }
+            else if (ns.isBigDecimalSchema()) {
+                return sourceObject;
             }
             return newObject;
         }
@@ -12876,6 +13025,16 @@ class CborShapeDeserializer extends protocols.SerdeContext {
                     const k = keys.values().next().value;
                     newObject.$unknown = [k, value[k]];
                 }
+                else if (typeof value.__type === "string") {
+                    for (const [k, v] of Object.entries(value)) {
+                        if (!(k in newObject)) {
+                            newObject[k] = v;
+                        }
+                    }
+                }
+            }
+            else if (value instanceof serde.NumericValue) {
+                return value;
             }
             return newObject;
         }
@@ -13080,6 +13239,9 @@ class HttpProtocol extends SerdeContext {
         }
     }
     setHostPrefix(request, operationSchema, input) {
+        if (this.serdeContext?.disableHostPrefix) {
+            return;
+        }
         const inputNs = schema.NormalizedSchema.of(operationSchema.input);
         const opTraits = schema.translateTraits(operationSchema.traits ?? {});
         if (opTraits.endpoint) {
@@ -13190,6 +13352,11 @@ class HttpBindingProtocol extends HttpProtocol {
             const memberTraits = memberNs.getMergedTraits() ?? {};
             const inputMemberValue = input[memberName];
             if (inputMemberValue == null && !memberNs.isIdempotencyToken()) {
+                if (memberTraits.httpLabel) {
+                    if (request.path.includes(`{${memberName}+}`) || request.path.includes(`{${memberName}}`)) {
+                        throw new Error(`No value provided for input HTTP label: ${memberName}.`);
+                    }
+                }
                 continue;
             }
             if (memberTraits.httpPayload) {
@@ -14087,6 +14254,9 @@ function translateTraits(indicator) {
     return traits;
 }
 
+const anno = {
+    it: Symbol.for("@smithy/nor-struct-it"),
+};
 class NormalizedSchema {
     ref;
     memberName;
@@ -14242,10 +14412,7 @@ class NormalizedSchema {
         return !!streaming || this.getSchema() === 42;
     }
     isIdempotencyToken() {
-        const match = (traits) => (traits & 0b0100) === 0b0100 ||
-            !!traits?.idempotencyToken;
-        const { normalizedTraits, traits, memberTraits } = this;
-        return match(normalizedTraits) || match(traits) || match(memberTraits);
+        return !!this.getMergedTraits().idempotencyToken;
     }
     getMergedTraits() {
         return (this.normalizedTraits ??
@@ -14326,9 +14493,19 @@ class NormalizedSchema {
             throw new Error("@smithy/core/schema - cannot iterate non-struct schema.");
         }
         const struct = this.getSchema();
-        for (let i = 0; i < struct[4].length; ++i) {
-            yield [struct[4][i], member([struct[5][i], 0], struct[4][i])];
+        const z = struct[4].length;
+        let it = struct[anno.it];
+        if (it && z === it.length) {
+            yield* it;
+            return;
         }
+        it = Array(z);
+        for (let i = 0; i < z; ++i) {
+            const k = struct[4][i];
+            const v = member([struct[5][i], 0], k);
+            yield (it[i] = [k, v]);
+        }
+        struct[anno.it] = it;
     }
 }
 function member(memberSchema, memberName) {
@@ -20992,29 +21169,80 @@ function modeOf(chunk, allowBuffer = true) {
 
 /***/ }),
 
+/***/ 3492:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getAwsChunkedEncodingStream = void 0;
+const getAwsChunkedEncodingStream = (readableStream, options) => {
+    const { base64Encoder, bodyLengthChecker, checksumAlgorithmFn, checksumLocationName, streamHasher } = options;
+    const checksumRequired = base64Encoder !== undefined &&
+        bodyLengthChecker !== undefined &&
+        checksumAlgorithmFn !== undefined &&
+        checksumLocationName !== undefined &&
+        streamHasher !== undefined;
+    const digest = checksumRequired ? streamHasher(checksumAlgorithmFn, readableStream) : undefined;
+    const reader = readableStream.getReader();
+    return new ReadableStream({
+        async pull(controller) {
+            const { value, done } = await reader.read();
+            if (done) {
+                controller.enqueue(`0\r\n`);
+                if (checksumRequired) {
+                    const checksum = base64Encoder(await digest);
+                    controller.enqueue(`${checksumLocationName}:${checksum}\r\n`);
+                    controller.enqueue(`\r\n`);
+                }
+                controller.close();
+            }
+            else {
+                controller.enqueue(`${(bodyLengthChecker(value) || 0).toString(16)}\r\n${value}\r\n`);
+            }
+        },
+    });
+};
+exports.getAwsChunkedEncodingStream = getAwsChunkedEncodingStream;
+
+
+/***/ }),
+
 /***/ 6522:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getAwsChunkedEncodingStream = void 0;
-const stream_1 = __nccwpck_require__(2203);
-const getAwsChunkedEncodingStream = (readableStream, options) => {
+exports.getAwsChunkedEncodingStream = getAwsChunkedEncodingStream;
+const node_stream_1 = __nccwpck_require__(7075);
+const getAwsChunkedEncodingStream_browser_1 = __nccwpck_require__(3492);
+const stream_type_check_1 = __nccwpck_require__(4414);
+function getAwsChunkedEncodingStream(stream, options) {
+    const readable = stream;
+    const readableStream = stream;
+    if ((0, stream_type_check_1.isReadableStream)(readableStream)) {
+        return (0, getAwsChunkedEncodingStream_browser_1.getAwsChunkedEncodingStream)(readableStream, options);
+    }
     const { base64Encoder, bodyLengthChecker, checksumAlgorithmFn, checksumLocationName, streamHasher } = options;
     const checksumRequired = base64Encoder !== undefined &&
         checksumAlgorithmFn !== undefined &&
         checksumLocationName !== undefined &&
         streamHasher !== undefined;
-    const digest = checksumRequired ? streamHasher(checksumAlgorithmFn, readableStream) : undefined;
-    const awsChunkedEncodingStream = new stream_1.Readable({ read: () => { } });
-    readableStream.on("data", (data) => {
+    const digest = checksumRequired ? streamHasher(checksumAlgorithmFn, readable) : undefined;
+    const awsChunkedEncodingStream = new node_stream_1.Readable({
+        read: () => { },
+    });
+    readable.on("data", (data) => {
         const length = bodyLengthChecker(data) || 0;
+        if (length === 0) {
+            return;
+        }
         awsChunkedEncodingStream.push(`${length.toString(16)}\r\n`);
         awsChunkedEncodingStream.push(data);
         awsChunkedEncodingStream.push("\r\n");
     });
-    readableStream.on("end", async () => {
+    readable.on("end", async () => {
         awsChunkedEncodingStream.push(`0\r\n`);
         if (checksumRequired) {
             const checksum = base64Encoder(await digest);
@@ -21024,8 +21252,7 @@ const getAwsChunkedEncodingStream = (readableStream, options) => {
         awsChunkedEncodingStream.push(null);
     });
     return awsChunkedEncodingStream;
-};
-exports.getAwsChunkedEncodingStream = getAwsChunkedEncodingStream;
+}
 
 
 /***/ }),
@@ -21161,6 +21388,14 @@ class Uint8ArrayBlobAdapter extends Uint8Array {
     }
 }
 
+Object.defineProperty(exports, "isBlob", ({
+    enumerable: true,
+    get: function () { return streamTypeCheck.isBlob; }
+}));
+Object.defineProperty(exports, "isReadableStream", ({
+    enumerable: true,
+    get: function () { return streamTypeCheck.isReadableStream; }
+}));
 exports.Uint8ArrayBlobAdapter = Uint8ArrayBlobAdapter;
 Object.keys(ChecksumStream).forEach(function (k) {
     if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
@@ -21202,12 +21437,6 @@ Object.keys(splitStream).forEach(function (k) {
     if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
         enumerable: true,
         get: function () { return splitStream[k]; }
-    });
-});
-Object.keys(streamTypeCheck).forEach(function (k) {
-    if (k !== 'default' && !Object.prototype.hasOwnProperty.call(exports, k)) Object.defineProperty(exports, k, {
-        enumerable: true,
-        get: function () { return streamTypeCheck[k]; }
     });
 });
 
@@ -46373,7 +46602,7 @@ module.exports = parseParams
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-apprunner","description":"AWS SDK for JavaScript Apprunner Client for Node.js, Browser and React Native","version":"3.955.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-apprunner","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo apprunner","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.954.0","@aws-sdk/credential-provider-node":"3.955.0","@aws-sdk/middleware-host-header":"3.953.0","@aws-sdk/middleware-logger":"3.953.0","@aws-sdk/middleware-recursion-detection":"3.953.0","@aws-sdk/middleware-user-agent":"3.954.0","@aws-sdk/region-config-resolver":"3.953.0","@aws-sdk/types":"3.953.0","@aws-sdk/util-endpoints":"3.953.0","@aws-sdk/util-user-agent-browser":"3.953.0","@aws-sdk/util-user-agent-node":"3.954.0","@smithy/config-resolver":"^4.4.4","@smithy/core":"^3.19.0","@smithy/fetch-http-handler":"^5.3.7","@smithy/hash-node":"^4.2.6","@smithy/invalid-dependency":"^4.2.6","@smithy/middleware-content-length":"^4.2.6","@smithy/middleware-endpoint":"^4.4.0","@smithy/middleware-retry":"^4.4.16","@smithy/middleware-serde":"^4.2.7","@smithy/middleware-stack":"^4.2.6","@smithy/node-config-provider":"^4.3.6","@smithy/node-http-handler":"^4.4.6","@smithy/protocol-http":"^5.3.6","@smithy/smithy-client":"^4.10.1","@smithy/types":"^4.10.0","@smithy/url-parser":"^4.2.6","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.15","@smithy/util-defaults-mode-node":"^4.2.18","@smithy/util-endpoints":"^3.2.6","@smithy/util-middleware":"^4.2.6","@smithy/util-retry":"^4.2.6","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node18":"18.2.4","@types/node":"^18.19.69","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"engines":{"node":">=18.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-apprunner","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-apprunner"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/client-apprunner","description":"AWS SDK for JavaScript Apprunner Client for Node.js, Browser and React Native","version":"3.975.0","scripts":{"build":"concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline client-apprunner","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo apprunner","test:index":"tsc --noEmit ./test/index-types.ts && node ./test/index-objects.spec.mjs"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.1","@aws-sdk/credential-provider-node":"^3.972.1","@aws-sdk/middleware-host-header":"^3.972.1","@aws-sdk/middleware-logger":"^3.972.1","@aws-sdk/middleware-recursion-detection":"^3.972.1","@aws-sdk/middleware-user-agent":"^3.972.2","@aws-sdk/region-config-resolver":"^3.972.1","@aws-sdk/types":"^3.973.0","@aws-sdk/util-endpoints":"3.972.0","@aws-sdk/util-user-agent-browser":"^3.972.1","@aws-sdk/util-user-agent-node":"^3.972.1","@smithy/config-resolver":"^4.4.6","@smithy/core":"^3.21.1","@smithy/fetch-http-handler":"^5.3.9","@smithy/hash-node":"^4.2.8","@smithy/invalid-dependency":"^4.2.8","@smithy/middleware-content-length":"^4.2.8","@smithy/middleware-endpoint":"^4.4.11","@smithy/middleware-retry":"^4.4.27","@smithy/middleware-serde":"^4.2.9","@smithy/middleware-stack":"^4.2.8","@smithy/node-config-provider":"^4.3.8","@smithy/node-http-handler":"^4.4.8","@smithy/protocol-http":"^5.3.8","@smithy/smithy-client":"^4.10.12","@smithy/types":"^4.12.0","@smithy/url-parser":"^4.2.8","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.26","@smithy/util-defaults-mode-node":"^4.2.29","@smithy/util-endpoints":"^3.2.8","@smithy/util-middleware":"^4.2.8","@smithy/util-retry":"^4.2.8","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node20":"20.1.8","@types/node":"^20.14.8","concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"engines":{"node":">=20.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-apprunner","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-apprunner"}}');
 
 /***/ })
 

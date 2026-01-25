@@ -550,7 +550,7 @@ const _tLT = "tagListType";
 const n0 = "com.amazonaws.sts";
 var accessKeySecretType = [0, n0, _aKST, 8, 0];
 var clientTokenType = [0, n0, _cTT, 8, 0];
-var AssumedRoleUser$ = [3, n0, _ARU, 0, [_ARI, _A], [0, 0]];
+var AssumedRoleUser$ = [3, n0, _ARU, 0, [_ARI, _A], [0, 0], 2];
 var AssumeRoleRequest$ = [
     3,
     n0,
@@ -558,6 +558,7 @@ var AssumeRoleRequest$ = [
     0,
     [_RA, _RSN, _PA, _P, _DS, _T, _TTK, _EI, _SN, _TC, _SI, _PC],
     [0, 0, () => policyDescriptorListType, 0, 1, () => tagListType, 64 | 0, 0, 0, 0, 0, () => ProvidedContextsListType],
+    2,
 ];
 var AssumeRoleResponse$ = [
     3,
@@ -574,6 +575,7 @@ var AssumeRoleWithWebIdentityRequest$ = [
     0,
     [_RA, _RSN, _WIT, _PI, _PA, _P, _DS],
     [0, 0, [() => clientTokenType, 0], 0, () => policyDescriptorListType, 0, 1],
+    3,
 ];
 var AssumeRoleWithWebIdentityResponse$ = [
     3,
@@ -590,12 +592,13 @@ var Credentials$ = [
     0,
     [_AKI, _SAK, _ST, _E],
     [0, [() => accessKeySecretType, 0], 0, 4],
+    4,
 ];
 var ExpiredTokenException$ = [
     -3,
     n0,
     _ETE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`ExpiredTokenException`, 400] },
+    { [_aQE]: [`ExpiredTokenException`, 400], [_e]: _c, [_hE]: 400 },
     [_m],
     [0],
 ];
@@ -604,7 +607,7 @@ var IDPCommunicationErrorException$ = [
     -3,
     n0,
     _IDPCEE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`IDPCommunicationError`, 400] },
+    { [_aQE]: [`IDPCommunicationError`, 400], [_e]: _c, [_hE]: 400 },
     [_m],
     [0],
 ];
@@ -613,7 +616,7 @@ var IDPRejectedClaimException$ = [
     -3,
     n0,
     _IDPRCE,
-    { [_e]: _c, [_hE]: 403, [_aQE]: [`IDPRejectedClaim`, 403] },
+    { [_aQE]: [`IDPRejectedClaim`, 403], [_e]: _c, [_hE]: 403 },
     [_m],
     [0],
 ];
@@ -622,7 +625,7 @@ var InvalidIdentityTokenException$ = [
     -3,
     n0,
     _IITE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`InvalidIdentityToken`, 400] },
+    { [_aQE]: [`InvalidIdentityToken`, 400], [_e]: _c, [_hE]: 400 },
     [_m],
     [0],
 ];
@@ -631,7 +634,7 @@ var MalformedPolicyDocumentException$ = [
     -3,
     n0,
     _MPDE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`MalformedPolicyDocument`, 400] },
+    { [_aQE]: [`MalformedPolicyDocument`, 400], [_e]: _c, [_hE]: 400 },
     [_m],
     [0],
 ];
@@ -640,7 +643,7 @@ var PackedPolicyTooLargeException$ = [
     -3,
     n0,
     _PPTLE,
-    { [_e]: _c, [_hE]: 400, [_aQE]: [`PackedPolicyTooLarge`, 400] },
+    { [_aQE]: [`PackedPolicyTooLarge`, 400], [_e]: _c, [_hE]: 400 },
     [_m],
     [0],
 ];
@@ -651,12 +654,12 @@ var RegionDisabledException$ = [
     -3,
     n0,
     _RDE,
-    { [_e]: _c, [_hE]: 403, [_aQE]: [`RegionDisabledException`, 403] },
+    { [_aQE]: [`RegionDisabledException`, 403], [_e]: _c, [_hE]: 403 },
     [_m],
     [0],
 ];
 schema.TypeRegistry.for(n0).registerError(RegionDisabledException$, RegionDisabledException);
-var Tag$ = [3, n0, _Ta, 0, [_K, _V], [0, 0]];
+var Tag$ = [3, n0, _Ta, 0, [_K, _V], [0, 0], 2];
 var STSServiceException$ = [-3, _s, "STSServiceException", 0, [], []];
 schema.TypeRegistry.for(_s).registerError(STSServiceException$, STSServiceException);
 var policyDescriptorListType = [1, n0, _pDLT, 0, () => PolicyDescriptorType$];
@@ -1023,7 +1026,7 @@ exports.resolveRuntimeExtensions = resolveRuntimeExtensions;
 /***/ 9955:
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.955.0","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=18.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"3.954.0","@aws-sdk/middleware-host-header":"3.953.0","@aws-sdk/middleware-logger":"3.953.0","@aws-sdk/middleware-recursion-detection":"3.953.0","@aws-sdk/middleware-user-agent":"3.954.0","@aws-sdk/region-config-resolver":"3.953.0","@aws-sdk/types":"3.953.0","@aws-sdk/util-endpoints":"3.953.0","@aws-sdk/util-user-agent-browser":"3.953.0","@aws-sdk/util-user-agent-node":"3.954.0","@smithy/config-resolver":"^4.4.4","@smithy/core":"^3.19.0","@smithy/fetch-http-handler":"^5.3.7","@smithy/hash-node":"^4.2.6","@smithy/invalid-dependency":"^4.2.6","@smithy/middleware-content-length":"^4.2.6","@smithy/middleware-endpoint":"^4.4.0","@smithy/middleware-retry":"^4.4.16","@smithy/middleware-serde":"^4.2.7","@smithy/middleware-stack":"^4.2.6","@smithy/node-config-provider":"^4.3.6","@smithy/node-http-handler":"^4.4.6","@smithy/protocol-http":"^5.3.6","@smithy/smithy-client":"^4.10.1","@smithy/types":"^4.10.0","@smithy/url-parser":"^4.2.6","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.15","@smithy/util-defaults-mode-node":"^4.2.18","@smithy/util-endpoints":"^3.2.6","@smithy/util-middleware":"^4.2.6","@smithy/util-retry":"^4.2.6","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~5.8.3"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@aws-sdk/nested-clients","version":"3.974.0","description":"Nested clients for AWS SDK packages.","main":"./dist-cjs/index.js","module":"./dist-es/index.js","types":"./dist-types/index.d.ts","scripts":{"build":"yarn lint && concurrently \'yarn:build:types\' \'yarn:build:es\' && yarn build:cjs","build:cjs":"node ../../scripts/compilation/inline nested-clients","build:es":"tsc -p tsconfig.es.json","build:include:deps":"yarn g:turbo run build -F=\\"$npm_package_name\\"","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"premove dist-cjs dist-es dist-types tsconfig.cjs.tsbuildinfo tsconfig.es.tsbuildinfo tsconfig.types.tsbuildinfo","lint":"node ../../scripts/validation/submodules-linter.js --pkg nested-clients","test":"yarn g:vitest run","test:watch":"yarn g:vitest watch"},"engines":{"node":">=20.0.0"},"sideEffects":false,"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","dependencies":{"@aws-crypto/sha256-browser":"5.2.0","@aws-crypto/sha256-js":"5.2.0","@aws-sdk/core":"^3.973.0","@aws-sdk/middleware-host-header":"^3.972.1","@aws-sdk/middleware-logger":"^3.972.1","@aws-sdk/middleware-recursion-detection":"^3.972.1","@aws-sdk/middleware-user-agent":"^3.972.1","@aws-sdk/region-config-resolver":"^3.972.1","@aws-sdk/types":"^3.973.0","@aws-sdk/util-endpoints":"3.972.0","@aws-sdk/util-user-agent-browser":"^3.972.1","@aws-sdk/util-user-agent-node":"^3.972.1","@smithy/config-resolver":"^4.4.6","@smithy/core":"^3.21.0","@smithy/fetch-http-handler":"^5.3.9","@smithy/hash-node":"^4.2.8","@smithy/invalid-dependency":"^4.2.8","@smithy/middleware-content-length":"^4.2.8","@smithy/middleware-endpoint":"^4.4.10","@smithy/middleware-retry":"^4.4.26","@smithy/middleware-serde":"^4.2.9","@smithy/middleware-stack":"^4.2.8","@smithy/node-config-provider":"^4.3.8","@smithy/node-http-handler":"^4.4.8","@smithy/protocol-http":"^5.3.8","@smithy/smithy-client":"^4.10.11","@smithy/types":"^4.12.0","@smithy/url-parser":"^4.2.8","@smithy/util-base64":"^4.3.0","@smithy/util-body-length-browser":"^4.2.0","@smithy/util-body-length-node":"^4.2.1","@smithy/util-defaults-mode-browser":"^4.3.25","@smithy/util-defaults-mode-node":"^4.2.28","@smithy/util-endpoints":"^3.2.8","@smithy/util-middleware":"^4.2.8","@smithy/util-retry":"^4.2.8","@smithy/util-utf8":"^4.2.0","tslib":"^2.6.2"},"devDependencies":{"concurrently":"7.0.0","downlevel-dts":"0.10.1","premove":"4.0.0","typescript":"~5.8.3"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["./signin.d.ts","./signin.js","./sso-oidc.d.ts","./sso-oidc.js","./sts.d.ts","./sts.js","dist-*/**"],"browser":{"./dist-es/submodules/signin/runtimeConfig":"./dist-es/submodules/signin/runtimeConfig.browser","./dist-es/submodules/sso-oidc/runtimeConfig":"./dist-es/submodules/sso-oidc/runtimeConfig.browser","./dist-es/submodules/sts/runtimeConfig":"./dist-es/submodules/sts/runtimeConfig.browser"},"react-native":{},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/packages/nested-clients","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"packages/nested-clients"},"exports":{"./package.json":"./package.json","./sso-oidc":{"types":"./dist-types/submodules/sso-oidc/index.d.ts","module":"./dist-es/submodules/sso-oidc/index.js","node":"./dist-cjs/submodules/sso-oidc/index.js","import":"./dist-es/submodules/sso-oidc/index.js","require":"./dist-cjs/submodules/sso-oidc/index.js"},"./sts":{"types":"./dist-types/submodules/sts/index.d.ts","module":"./dist-es/submodules/sts/index.js","node":"./dist-cjs/submodules/sts/index.js","import":"./dist-es/submodules/sts/index.js","require":"./dist-cjs/submodules/sts/index.js"},"./signin":{"types":"./dist-types/submodules/signin/index.d.ts","module":"./dist-es/submodules/signin/index.js","node":"./dist-cjs/submodules/signin/index.js","import":"./dist-es/submodules/signin/index.js","require":"./dist-cjs/submodules/signin/index.js"}}}');
 
 /***/ })
 
