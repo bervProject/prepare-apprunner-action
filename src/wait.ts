@@ -3,7 +3,7 @@ import {
   AppRunnerClient,
   DescribeServiceCommand
 } from '@aws-sdk/client-apprunner'
-import {sleep} from './sleep'
+import {sleep} from './sleep.js'
 
 async function waitAppRunner({
   client,

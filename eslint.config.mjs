@@ -38,6 +38,7 @@ export default defineConfig([
         },
 
         rules: {
+            "import/no-unresolved": "warn",
             "i18n-text/no-en": "warn",
             "@typescript-eslint/no-unused-vars": "error",
 

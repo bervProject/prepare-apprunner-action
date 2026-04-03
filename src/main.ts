@@ -1,6 +1,6 @@
 import {getInput, saveState, info, summary, setFailed} from '@actions/core'
 import {AppRunnerClient, ResumeServiceCommand} from '@aws-sdk/client-apprunner' // ES Modules import
-import {waitAppRunner, waitAppRunnerUntil} from './wait'
+import {waitAppRunner, waitAppRunnerUntil} from './wait.js'
 
 async function run(): Promise<void> {
   try {
